@@ -4,7 +4,7 @@
 const fuzz = window.Vendor.fuzzball;
 const unidecode = window.Vendor.unidecode;
 
-// Cache cho danh sách ngân hàng và chuỗi chuẩn hóa
+// Bộ nhớ cache cho danh sách ngân hàng và chuỗi chuẩn hóa
 let bankListCache = null;
 const normalizedCache = new Map();
 const bankNameCache = new Map();
@@ -118,26 +118,30 @@ function extractBankTransferInfo(doc) {
   };
 
   try {
+    // Cải thiện cách lấy mã giao dịch
     const orderNumberElement = doc.querySelector('div[data-bn-type="text"].css-14yjdiq');
     if (orderNumberElement) {
       transferInfo.orderNumber = orderNumberElement.textContent.trim();
       transferInfo.referenceMessage = transferInfo.orderNumber;
     }
 
+    // Xác định phương thức thanh toán
     const paymentMethodElement = doc.querySelector('.PaymentMethodItem__text');
     if (paymentMethodElement) {
       transferInfo.paymentMethod = paymentMethodElement.textContent.trim();
     }
 
-    const amountElement = doc.querySelector('.sc-jJMGnK');
+    // Cải thiện cách lấy số tiền
+    const amountElement = doc.querySelector('.sc-jJMGnK, .sc-cBoqAE .sc-jJMGnK');
     if (amountElement) {
       const amountText = amountElement.textContent.trim();
-      const amountMatch = amountText.match(/[\d,]+\.\d+|\d+/);
+      const amountMatch = amountText.match(/[\d,]+(?:\.\d+)?/);
       if (amountMatch) {
         transferInfo.amount = amountMatch[0].replace(/,/g, '');
       }
     }
 
+    // Xác định loại giao dịch (mua/bán)
     const orderTypeElement = doc.querySelector('.css-vurnku');
     if (orderTypeElement) {
       const orderTypeText = orderTypeElement.textContent;
@@ -148,28 +152,38 @@ function extractBankTransferInfo(doc) {
         : null;
     }
 
-    const isVietnamBankTransfer = transferInfo.paymentMethod && transferInfo.paymentMethod.includes('(Việt Nam)');
+    // Xác định ngôn ngữ dựa trên nhiều yếu tố hơn
+    const isVietnamBankTransfer = 
+      (transferInfo.paymentMethod && transferInfo.paymentMethod.includes('(Việt Nam)')) ||
+      doc.querySelector('.flex.justify-between .text-tertiaryText div:contains("Tên ngân hàng")') !== null ||
+      doc.querySelector('.flex.w-[150px] div:contains("Tên ngân hàng")') !== null;
 
+    // Cải thiện labelMap để phù hợp với cấu trúc HTML mới
     const labelMap = isVietnamBankTransfer
       ? {
           'Họ và tên': 'accountName',
+          'Name': 'accountName',
           'Tên ngân hàng': 'bankName',
           'Số tài khoản/Số thẻ': 'accountNumber',
+          'Bank Card/Account Number': 'accountNumber',
           'Chi nhánh mở tài khoản': 'bankBranch',
           'Nội dung chuyển khoản': 'referenceMessage',
         }
       : {
           'Name': 'accountName',
           'Bank Card/Account Number': 'accountNumber',
-          'Tên ngân hàng': 'bankName',
-          'Chi nhánh mở tài khoản': 'bankBranch',
-          'Nội dung chuyển khoản': 'referenceMessage',
+          'Bank Name': 'bankName',
+          'Bank Branch': 'bankBranch',
+          'Reference Message': 'referenceMessage',
         };
 
+    // Tìm tất cả các hàng thông tin
     const infoRows = doc.querySelectorAll('.flex.justify-between');
     infoRows.forEach((row) => {
-      const labelElement = row.querySelector('.text-tertiaryText div');
-      const valueElement = row.querySelector('.flex.flex-grow.justify-end .break-words div');
+      // Cải thiện cách tìm label và giá trị
+      const labelElement = row.querySelector('.text-tertiaryText div, .flex.w-[150px] div');
+      const valueElement = row.querySelector('.flex.flex-grow.justify-end .break-words div, .flex.gap-2xs.break-words div');
+      
       if (labelElement && valueElement) {
         const label = labelElement.textContent.trim();
         const value = valueElement.textContent.trim();
@@ -182,7 +196,7 @@ function extractBankTransferInfo(doc) {
 
     return mapBankName(transferInfo.bankName).then((bankInfo) => {
       if (bankInfo) {
-        transferInfo.bankName = bankInfo Imitation Game
+        transferInfo.bankName = bankInfo.name;
         transferInfo.bankBin = bankInfo.bin;
         transferInfo.bankCode = bankInfo.code;
       }
@@ -190,7 +204,7 @@ function extractBankTransferInfo(doc) {
     });
   } catch (error) {
     console.error('Lỗi khi trích xuất thông tin:', error);
-    return null;
+    return Promise.resolve(null);
   }
 }
 
@@ -286,30 +300,48 @@ function displayQRCode(qrUrl, transferInfo) {
 
 // Theo dõi trang để phát hiện HTML
 function observePage() {
+  // Lưu observer hiện tại để có thể disconnect khi cần
+  if (window.qrCodeObserver) {
+    window.qrCodeObserver.disconnect();
+  }
+  
   const observer = new MutationObserver(async (mutations) => {
     // Kiểm tra trạng thái tiện ích
     const { isEnabled } = await chrome.storage.local.get('isEnabled');
     if (!isEnabled) return;
 
-    // Kiểm tra cấu trúc HTML mục tiêu
-    const targetElement = document.querySelector('.flex.justify-between');
-    if (targetElement) {
-      const transferInfo = await extractBankTransferInfo(document);
-      if (transferInfo && transferInfo.accountNumber) {
-        try {
-          const qrUrl = generateQRUrl(transferInfo);
-          displayQRCode(qrUrl, transferInfo);
-        } catch (error) {
-          console.error('Lỗi khi tạo mã QR:', error);
+    // Thêm thời gian chờ nhỏ để đảm bảo DOM đã được cập nhật đầy đủ
+    setTimeout(async () => {
+      // Kiểm tra nhiều điều kiện để phát hiện modal chuyển khoản
+      const modalElement = document.querySelector('.bn-modal-wrap');
+      const targetElement = document.querySelector('.flex.justify-between');
+      const paymentInfoElement = document.querySelector('.flex.flex-col.gap-2xs.rounded-m.bg-secondaryBg');
+      
+      if ((modalElement && targetElement) || paymentInfoElement) {
+        // Kiểm tra xem đã hiển thị QR chưa để tránh tạo nhiều lần
+        const existingQR = document.getElementById('qr-code-container');
+        if (!existingQR) {
+          const transferInfo = await extractBankTransferInfo(document);
+          if (transferInfo && transferInfo.accountNumber && (transferInfo.bankBin || transferInfo.bankCode)) {
+            try {
+              const qrUrl = generateQRUrl(transferInfo);
+              displayQRCode(qrUrl, transferInfo);
+            } catch (error) {
+              console.error('Lỗi khi tạo mã QR:', error);
+            }
+          }
         }
       }
-    }
+    }, 500);
   });
 
   observer.observe(document.body, {
     childList: true,
     subtree: true,
   });
+  
+  // Lưu observer để có thể tham chiếu sau này
+  window.qrCodeObserver = observer;
 }
 
 // Khởi tạo khi trang tải
@@ -328,6 +360,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.isEnabled) {
       observePage();
     } else {
+      // Ngắt kết nối observer nếu có
+      if (window.qrCodeObserver) {
+        window.qrCodeObserver.disconnect();
+      }
+      
+      // Xóa mã QR hiện tại nếu có
       const existingQR = document.getElementById('qr-code-container');
       if (existingQR) {
         existingQR.remove();

@@ -1,0 +1,364 @@
+<div role="dialog" tabindex="0" aria-modal="true" aria-label="modal" class="bn-modal-wrap data-size-small">
+   <div class="css-4cffwv">
+      <div class="css-1q42ygc">
+         <div class="css-1wmiyp6">
+            <div class="css-i6eeeq">
+               <div class="css-vurnku">
+                  <div class="css-1d5x9tk"></div>
+                  <div class="sc-dPaNzc fqbJCS css-vurnku">
+                     <div class="css-12sygbp">
+                        <div class="css-fy6ofy">
+                           <div data-bn-type="text" class="css-14yjdiq">22777991033034014720</div>
+                           <img src="https://bin.bnbstatic.com/static/images/c2c/icon-block-badge-white.svg" style="display: none; width: 20px; height: 18px;">
+                        </div>
+                        <div class="css-10nf7hq">
+                           <div data-bn-type="text" class="css-178kcl">Chưa trả</div>
+                        </div>
+                     </div>
+                     <div color="#2ebd85" class="sc-jNnpgg hcNyKk">
+                        <div class="css-3j2kqe">
+                           <div class="css-vurnku">Mua<span style="color: rgb(94, 102, 115); font-weight: 400;"> Tổng số lượng</span></div>
+                        </div>
+                     </div>
+                     <div class="sc-cBoqAE lRfdj" style="color: rgb(33, 40, 51);"><span class="sc-jJMGnK laKGqb">13,223,997.00</span> <span style="font-size: 16px;">VND</span></div>
+                  </div>
+               </div>
+               <div class="css-n32ck1">
+                  <div class="css-1dpv2l8">
+                     <div class="css-tpxybk">
+                        <div data-bn-type="text" class="sc-ciSkZP bwSYJA css-vurnku">Loại tài sản</div>
+                        <div data-bn-type="text" class="sc-jcwpoC kyvWZW css-vurnku">USDT</div>
+                     </div>
+                     <div class="css-tpxybk">
+                        <div data-bn-type="text" class="sc-ciSkZP bwSYJA css-vurnku">Giá (VND/USDT)</div>
+                        <div data-bn-type="text" class="sc-jcwpoC kyvWZW css-vurnku">26,340.00</div>
+                     </div>
+                     <div class="css-tpxybk">
+                        <div data-bn-type="text" class="sc-ciSkZP bwSYJA css-vurnku">Đồng tiền (USD/VND)</div>
+                        <div data-bn-type="text" class="sc-jcwpoC kyvWZW css-vurnku">--</div>
+                     </div>
+                     <div class="css-tpxybk">
+                        <div data-bn-type="text" class="sc-ciSkZP bwSYJA css-vurnku">Số lượng (USDT)</div>
+                        <div data-bn-type="text" class="sc-jcwpoC kyvWZW css-vurnku">502.05</div>
+                     </div>
+                     <div class="css-tpxybk">
+                        <div data-bn-type="text" class="sc-ciSkZP bwSYJA css-vurnku">Nguồn</div>
+                        <div data-bn-type="text" class="sc-jcwpoC kyvWZW css-vurnku">Giao dịch P2P</div>
+                     </div>
+                     <div class="css-tpxybk">
+                        <div data-bn-type="text" class="sc-ciSkZP bwSYJA css-vurnku">Thời gian khớp lệnh</div>
+                        <div data-bn-type="text" class="sc-jcwpoC kyvWZW css-vurnku">2025-07-14 15:25:20</div>
+                     </div>
+                     <div class="css-13dfvuq">
+                        <div data-bn-type="text" class="sc-ciSkZP bwSYJA css-vurnku">
+                           <div class="css-1e7bmgk">
+                              <div class="css-10nf7hq">
+                                 <div data-bn-type="text" class="css-vurnku">Phí dành riêng(USDT)</div>
+                                 <svg class="bn-svg ml-4xs flex-shrink-0 text-[15px] text-iconNormal" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 1.6c5.744 0 10.4 4.656 10.4 10.4 0 5.744-4.656 10.4-10.4 10.4-5.744 0-10.4-4.656-10.4-10.4C1.6 6.256 6.256 1.6 12 1.6zm0 1.8A8.6 8.6 0 003.4 12a8.6 8.6 0 008.6 8.6 8.6 8.6 0 008.6-8.6A8.6 8.6 0 0012 3.4zm0 6.3a.9.9 0 01.9.9v6a.9.9 0 01-1.8 0v-6a.9.9 0 01.9-.9zm0-3.1a1 1 0 110 2 1 1 0 010-2z" fill="currentColor"></path>
+                                 </svg>
+                              </div>
+                           </div>
+                        </div>
+                        <div data-bn-type="text" class="sc-jcwpoC kyvWZW css-vurnku">0.37</div>
+                     </div>
+                  </div>
+                  <div class="sc-gXfVKN jKLUHq"></div>
+                  <div class="px-m mb-2xs body3">
+                     <div class="text-tertiaryText mb-m">Phương thức thanh toán</div>
+                     <div class="flex flex-col gap-2xs rounded-m bg-secondaryBg px-m py-s">
+                        <div class="flex gap-2xs">
+                           <div class="flex items-center gap-2xs max-w-full overflow-hidden [&amp;_.bn-tooltips-wrap:first-child]:g-[max-w-full,overflow-hidden]">
+                              <div class="bn-tooltips-wrap bn-tooltips-web">
+                                 <div aria-describedby="bn-tooltips-WMGHQeE0" class="bn-tooltips-ele">
+                                    <div class="PaymentMethodItem flex items-center overflow-hidden gap-4xs cursor-default">
+                                       <div class="PaymentMethodItem__badge w-[3px] h-[8px] rounded-xs shrink-0" style="background-color: rgb(240, 185, 11);"></div>
+                                       <div class="PaymentMethodItem__text whitespace-nowrap overflow-hidden text-ellipsis subtitle1" aria-labelledby="Chuyển khoản ngân hàng">Chuyển khoản ngân hàng</div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="flex justify-between">
+                           <div class="flex w-[150px] flex-shrink-0 gap-4xs text-tertiaryText">
+                              <div>Name</div>
+                           </div>
+                           <div class="flex flex-grow justify-end">
+                              <div class="flex gap-2xs break-words">
+                                 <div>NGUYỄN HỮU TRỌNG</div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="flex justify-between">
+                           <div class="flex w-[150px] flex-shrink-0 gap-4xs text-tertiaryText">
+                              <div>Bank Card/Account Number</div>
+                           </div>
+                           <div class="flex flex-grow justify-end">
+                              <div class="flex gap-2xs break-words">
+                                 <div>0383945607</div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="flex justify-between">
+                           <div class="flex w-[150px] flex-shrink-0 gap-4xs text-tertiaryText">
+                              <div>Tên ngân hàng</div>
+                           </div>
+                           <div class="flex flex-grow justify-end">
+                              <div class="flex gap-2xs break-words">
+                                 <div>mbbank</div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="flex justify-between">
+                           <div class="flex w-[150px] flex-shrink-0 gap-4xs text-tertiaryText">
+                              <div>Nội dung chuyển khoản</div>
+                              <div class="css-1f9551p">
+                                 <svg class="bn-svg h-[14px] w-[14px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 1.6c5.744 0 10.4 4.656 10.4 10.4 0 5.744-4.656 10.4-10.4 10.4-5.744 0-10.4-4.656-10.4-10.4C1.6 6.256 6.256 1.6 12 1.6zm0 1.8A8.6 8.6 0 003.4 12a8.6 8.6 0 008.6 8.6 8.6 8.6 0 008.6-8.6A8.6 8.6 0 0012 3.4zm0 12.1a1 1 0 110 2 1 1 0 010-2zm0-8.7a.9.9 0 01.9.9v6a.9.9 0 01-1.8 0v-6a.9.9 0 01.9-.9z" fill="currentColor"></path>
+                                 </svg>
+                              </div>
+                           </div>
+                           <div class="flex flex-grow justify-end">
+                              <div class="flex gap-2xs break-words">
+                                 <div>22777991033034014720</div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="sc-carFqZ hBWCUB css-1e0wv9w">
+               <button data-bn-type="button" class="sc-iTVJFM esWeYY css-mdqy3k">
+                  <div class="css-6xx5k5">
+                     <div class="css-wxplwj"><span class="css-12cl38p">Huỷ lệnh</span><span class="css-vurnku">&nbsp;00:13:12</span></div>
+                  </div>
+               </button>
+               <button data-bn-type="button" class="sc-iTVJFM dhePrJ css-z91r56">
+                  <div class="css-6xx5k5">
+                     <div class="css-wxplwj"><span class="css-12cl38p">Đánh dấu là đã trả</span><span class="css-vurnku">&nbsp;00:13:12</span></div>
+                  </div>
+               </button>
+            </div>
+         </div>
+      </div>
+      <div class="css-ykspep">
+         <div class="flex flex-col relative bg-basicBg css-qk0qxa">
+            <div class="relative mb-4xs w-full bg-basicBg p-m !pb-m border-b border-line">
+               <div class="flex justify-between items-center !items-start">
+                  <div>
+                     <div class="bn-flex gap-2xs items-center" textprops="[object Object]">
+                        <div class="bn-tooltips-wrap bn-tooltips-web">
+                           <div aria-describedby="bn-tooltips-Qdn2u0QN" class="bn-tooltips-ele">
+                              <div class="bn-flex merchantName-avatar rounded-m subtitle3 relative flex-none items-center justify-center text-center bg-primaryText text-basicBg text-[20px] tablet:text-[24px] !rounded-circle" style="width: 48px; height: 48px;">P</div>
+                           </div>
+                        </div>
+                        <div>
+                           <div class="bn-flex gap-4xs items-center">
+                              <a href="https://c2c-admin.binance.com/order/user/se2a76aef623631c9ac287d968e4fa50a" target="_blank" class="merchantName-nickname text-primaryText line-clamp-1 items-center overflow-hidden text-ellipsis break-all no-underline cursor-pointer subtitle1" style="max-width: 206px;">P2P-4fa50afz</a>
+                              <div class="bn-flex gap-4xs flex-shrink-0 items-center"></div>
+                           </div>
+                           <div class="flex flex-wrap items-center gap-2xs">
+                              <div class="caption1 text-tertiaryText">NGUYỄN HỮU TRỌNG</div>
+                              <div class="h-[12px] w-[1px] border-r border-line"></div>
+                              <div class="caption1 flex cursor-pointer items-center text-tertiaryText">
+                                 <div>Đã giao dịch</div>
+                                 <svg class="bn-svg h-[16px] w-[16px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M15.698 12.568a.9.9 0 00-.061-1.205l-6-6-.069-.061a.9.9 0 00-1.266 1.266l.061.069L13.727 12l-5.364 5.363a.9.9 0 001.274 1.274l6-6 .061-.069z" fill="currentColor"></path>
+                                 </svg>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="flex items-center gap-2xs tablet:gap-xl">
+                     <div class="bn-tooltips-wrap">
+                        <div aria-describedby="bn-tooltips-jptTxkSC" class="bn-tooltips-ele">
+                           <svg class="bn-svg h-[20px] w-[20px] cursor-pointer tablet:h-[24px] tablet:w-[24px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M4.9 10a1.5 1.5 0 011.5 1.5v1A1.5 1.5 0 014.9 14h-1a1.5 1.5 0 01-1.5-1.5v-1A1.5 1.5 0 013.9 10h1zm7.6 0a1.5 1.5 0 011.5 1.5v1a1.5 1.5 0 01-1.5 1.5h-1a1.5 1.5 0 01-1.5-1.5v-1a1.5 1.5 0 011.5-1.5h1zm7.6 0a1.5 1.5 0 011.5 1.5v1a1.5 1.5 0 01-1.5 1.5h-1a1.5 1.5 0 01-1.5-1.5v-1a1.5 1.5 0 011.5-1.5h1z" fill="currentColor"></path>
+                           </svg>
+                        </div>
+                        <div role="tooltip" tabindex="0" id="bn-tooltips-jptTxkSC" class="bn-bubble bn-bubble__unset data-shadow data-font-14 bn-tooltips" style="transform: translate(0px, 0px); top: 100%; right: 0px;">
+                           <div class="bn-bubble-arrow" aria-hidden="true" style="transform: translate(0px, 0px) rotate(45deg); top: 1px; right: 9px;"></div>
+                           <div class="bn-bubble-arrow-shadow" aria-hidden="true" style="transform: translate(0px, 0px) rotate(45deg); top: 1px; right: 9px;"></div>
+                           <div class="bn-bubble-content" style="margin-top: 4px;">
+                              <div class="flex w-[150px] flex-col gap-4xs rounded-2l py-s shadow-1">
+                                 <div class="flex w-full cursor-pointer items-center gap-4xs px-s py-4xs hover:bg-input">
+                                    <svg class="bn-svg h-[20px] w-[20px] text-iconNormal" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                       <path d="M6.864 13.363a.5.5 0 01-.5-.5V9.626a.5.5 0 01.796-.403l3.5 2.576a.5.5 0 01.204.403v.661a.5.5 0 01-.5.5h-3.5zM17.137 13.363a.5.5 0 00.5-.5V9.626a.5.5 0 00-.797-.403l-3.5 2.576a.5.5 0 00-.204.403v.661a.5.5 0 00.5.5h3.5z" fill="currentColor"></path>
+                                       <path d="M20.6 12A8.6 8.6 0 0012 3.4 8.6 8.6 0 003.4 12v4.378h3.222a1 1 0 011 1V20.6h8.756v-3.222a1 1 0 011-1H20.6V12zm1.8 4.777a1.4 1.4 0 01-1.4 1.4h-2.822V21a1.4 1.4 0 01-1.4 1.4H7.222a1.4 1.4 0 01-1.4-1.4v-2.822H3a1.4 1.4 0 01-1.4-1.4V12C1.6 6.256 6.256 1.6 12 1.6c5.744 0 10.4 4.656 10.4 10.4v4.777z" fill="currentColor"></path>
+                                    </svg>
+                                    <div class="body5">Báo cáo</div>
+                                 </div>
+                                 <div class="flex w-full cursor-pointer items-center gap-4xs px-s py-4xs hover:bg-input">
+                                    <svg class="bn-svg h-[20px] w-[20px] text-iconNormal" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                       <path d="M20.6 12A8.6 8.6 0 0012 3.4 8.6 8.6 0 003.4 12a8.6 8.6 0 008.6 8.6 8.6 8.6 0 008.6-8.6zm1.8 0c0 5.744-4.656 10.4-10.4 10.4-5.744 0-10.4-4.656-10.4-10.4C1.6 6.256 6.256 1.6 12 1.6c5.744 0 10.4 4.656 10.4 10.4z" fill="currentColor"></path>
+                                       <path d="M17.363 5.363l.069-.061a.9.9 0 011.266 1.266l-.061.069-12 12a.9.9 0 01-1.274-1.274l12-12z" fill="currentColor"></path>
+                                    </svg>
+                                    <div class="body5">Chặn</div>
+                                 </div>
+                                 <div class="flex w-full cursor-pointer items-center gap-4xs px-s py-4xs hover:bg-input">
+                                    <svg class="bn-svg h-[20px] w-[20px] text-iconNormal" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                       <path d="M18.1 11a7.1 7.1 0 10-14.2 0 7.1 7.1 0 1014.2 0zm1.8 0c0 2.133-.752 4.09-2.003 5.623l3.74 3.74.061.069a.9.9 0 01-1.266 1.266l-.069-.061-3.74-3.74A8.9 8.9 0 1119.9 11z" fill="currentColor"></path>
+                                    </svg>
+                                    <div class="body5">Tìm</div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <svg class="bn-svg h-[20px] w-[20px] cursor-pointer tablet:h-[24px] tablet:w-[24px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.863 17.863L10.726 12 4.863 6.137a.9.9 0 011.274-1.274L12 10.727l5.863-5.864a.9.9 0 011.274 1.274L13.273 12l5.864 5.863.061.069a.9.9 0 01-1.266 1.266l-.069-.061L12 13.273l-5.863 5.864a.9.9 0 01-1.274-1.274z" fill="currentColor"></path>
+                     </svg>
+                  </div>
+               </div>
+            </div>
+            <div class="relative flex flex-1 overflow-hidden flex-col bg-basicBg">
+               <div class="bg-input rounded-large p-s gap-4xs mt-m mx-m pc:mx-xl tablet:h-[68px] body5 z-[3] flex h-[60px]">
+                  <svg class="bn-svg tablet:mt-4xs mt-[2px] h-[16px] w-[16px] flex-shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                     <path d="M12 1.6c5.744 0 10.4 4.656 10.4 10.4 0 5.744-4.656 10.4-10.4 10.4-5.744 0-10.4-4.656-10.4-10.4C1.6 6.256 6.256 1.6 12 1.6zm0 1.8A8.6 8.6 0 003.4 12a8.6 8.6 0 008.6 8.6 8.6 8.6 0 008.6-8.6A8.6 8.6 0 0012 3.4zm0 12.1a1 1 0 110 2 1 1 0 010-2zm0-8.7a.9.9 0 01.9.9v6a.9.9 0 01-1.8 0v-6a.9.9 0 01.9-.9z" fill="currentColor"></path>
+                  </svg>
+                  <div class="relative flex-grow overflow-hidden whitespace-pre-wrap break-all">
+                     Lưu ý: Nhân viên Binance KHÔNG liên hệ người dùng qua số điện thoại, Zalo, Telegram để hỗ trợ xử lý khiếu nại và KHÔNG yêu cầu bạn quét mã QR. Người dùng lưu ý để tránh lừa đảo.   Người mua: Khi thực hiện chuyển khoản cho người bán, vui lòng điền mã lệnh vào phần ghi chú chuyển khoản, tuyệt đối KHÔNG đề cập "USDT", "Bitcoin"... KHÔNG hủy lệnh giao dịch sau khi chuyển khoản thành công, hủy lệnh khi đã chuyển khoản có thể dẫn đến mất tiền. Người bán: Vui lòng kiểm tra kỹ số tiền mà bạn nhận được thông qua app ngân hàng của bạn và chỉ mở khóa tiền mã hóa khi bạn đã NHẬN ĐỦ khoản thanh toán từ người mua.
+                     <div class="tablet:bottom-0 bg-input absolute bottom-0 right-0">...<span class="text-textLink cursor-pointer">Chi tiết</span></div>
+                  </div>
+                  <svg class="bn-svg !text-iconNormal h-[16px] w-[16px] flex-shrink-0 cursor-pointer" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                     <path d="M4.863 17.863L10.726 12 4.863 6.137a.9.9 0 011.274-1.274L12 10.727l5.863-5.864a.9.9 0 011.274 1.274L13.273 12l5.864 5.863.061.069a.9.9 0 01-1.266 1.266l-.069-.061L12 13.273l-5.863 5.864a.9.9 0 01-1.274-1.274z" fill="currentColor"></path>
+                  </svg>
+               </div>
+               <div class="gap-m scrollbar p-m flex w-full flex-1 overflow-auto overflow-x-hidden overscroll-contain flex-col-reverse">
+                  <div class="flex-1"></div>
+                  <div class="w-full">
+                     <div>
+                        <div id="227779910330340147201752481521663" class="flex justify-end gap-2xs items-center body3">
+                           <div class="w-[16px] shrink-0 flex justify-end chatBubble__avatarSlot"></div>
+                           <div class="bg-badgeBg p-s rounded-m">
+                              <div class="whitespace-pre-wrap break-words justify-end">Em sẽ chuyển luôn bây giờ ạ. Đây là zalo của em nếu anh chị cần giao dịch gấp 24/7 
+                                 0815742321
+                              </div>
+                           </div>
+                        </div>
+                        <div class="gap-4xs ml-2xs float-right flex items-center !leading-[25px]">
+                           <div class="text-tertiaryText caption1">15:25</div>
+                           <div class="text-tertiaryText caption1">Đã gửi</div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="bn-flex w-full justify-center">
+                     <div class="w-fit">
+                        <div id="227779910330340147201752481521172" class="caption1 w-full p-s bg-input rounded-large">
+                           <div class="flex gap-4xs">
+                              <svg class="bn-svg w-[16px] h-[16px] font-medium shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                 <path d="M12 1.6c5.744 0 10.4 4.656 10.4 10.4 0 5.744-4.656 10.4-10.4 10.4-5.744 0-10.4-4.656-10.4-10.4C1.6 6.256 6.256 1.6 12 1.6zm0 1.8A8.6 8.6 0 003.4 12a8.6 8.6 0 008.6 8.6 8.6 8.6 0 008.6-8.6A8.6 8.6 0 0012 3.4zm0 12.1a1 1 0 110 2 1 1 0 010-2zm0-8.7a.9.9 0 01.9.9v6a.9.9 0 01-1.8 0v-6a.9.9 0 01.9-.9z" fill="currentColor"></path>
+                              </svg>
+                              <div>Người bán đã đặt lệnh, vui lòng thanh toán trong thời gian quy định.</div>
+                           </div>
+                        </div>
+                        <div class="">
+                           <div class="gap-4xs ml-2xs float-right flex items-center">
+                              <div class="text-tertiaryText caption1">15:25</div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="bn-flex w-full justify-center">
+                     <div class="w-fit">
+                        <div id="1752481521000timeStamp" class="caption1 w-full text-tertiaryText text-center">
+                           <div class="">
+                              <div>Hôm nay</div>
+                           </div>
+                        </div>
+                        <div class=""></div>
+                     </div>
+                  </div>
+                  <div class="bg-vessel py-[2px] w-[calc(100%_+_48px)] mx-[-24px] text-center caption1 text-secondaryText">Thông báo đặt lệnh mới</div>
+                  <div class="bn-flex w-full justify-center">
+                     <div class="w-fit">
+                        <div class="caption1 w-full border border-line p-s rounded-2l pc:g-[mx-xl,w-fit,self-center] mb-m">
+                           <div class="">
+                              <div>Chào mừng bạn đến với phòng chat mới. <span class="text-textLink cursor-pointer">Nhấp để đồng bộ hóa tin nhắn cũ vào phòng chat này.</span></div>
+                           </div>
+                        </div>
+                        <div class="pc:mx-xl"></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="bg-basicBg relative">
+               <div class="relative flex items-center gap-2xs border-t border-line bg-basicBg p-m">
+                  <div class="flex w-full flex-1 items-center justify-between gap-2xs">
+                     <div class="bn-tooltips-wrap bn-tooltips-web">
+                        <div aria-describedby="bn-tooltips-5Qx6Mfyl" class="bn-tooltips-ele">
+                           <div class="bn-tooltips-wrap">
+                              <div aria-describedby="bn-tooltips-YpxtkZua" class="bn-tooltips-ele">
+                                 <div class="w-[40px] h-[40px] cursor-pointer hover:bg-input flex justify-center items-center shrink-0 rounded-m">
+                                    <svg class="bn-svg w-[24px] h-[24px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                       <path d="M12 1.6c5.744 0 10.4 4.656 10.4 10.4 0 5.744-4.656 10.4-10.4 10.4-5.744 0-10.4-4.656-10.4-10.4C1.6 6.256 6.256 1.6 12 1.6zm0 1.8A8.6 8.6 0 003.4 12a8.6 8.6 0 008.6 8.6 8.6 8.6 0 008.6-8.6A8.6 8.6 0 0012 3.4zm0 3.7a.9.9 0 01.9.9v3.1H16l.092.005a.9.9 0 010 1.79L16 12.9h-3.1V16a.9.9 0 01-1.8 0v-3.1H8a.9.9 0 010-1.8h3.1V8a.9.9 0 01.9-.9z" fill="currentColor"></path>
+                                    </svg>
+                                 </div>
+                              </div>
+                              <div role="tooltip" tabindex="0" id="bn-tooltips-YpxtkZua" class="bn-bubble bn-bubble__unset data-shadow data-font-14 bn-tooltips" style="transform: translate(0px, 0px); bottom: 100%; left: 0px;">
+                                 <div class="bn-bubble-content" style="margin-bottom: 20px;">
+                                    <div class="flex justify-center mobile:w-full tablet:min-w-[207px] tablet:flex-col tablet:items-center">
+                                       <div class="flex w-full cursor-pointer items-center justify-center gap-4xs px-m py-s mobile:flex-col">
+                                          <div class="flex shrink-0 items-center justify-center rounded-m border-line mobile:h-[40px] mobile:w-[40px] mobile:border">
+                                             <svg class="bn-svg h-[24px] w-[24px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M20.653 2.508A1.5 1.5 0 0122 4v12.273l-.008.153a1.5 1.5 0 01-1.339 1.339l-.153.008h-6.092l-.05.013-5.816 3.397-.19.093A1.502 1.502 0 016.3 20.1l-.014-.212v-2.014a.101.101 0 00-.061-.093l-.04-.008H3.5l-.153-.007a1.5 1.5 0 01-1.34-1.34L2 16.274V4a1.5 1.5 0 011.347-1.492L3.5 2.5h17l.153.008zM3.8 15.973h2.386a1.9 1.9 0 011.9 1.9v1.491l5.364-3.132.11-.06c.263-.131.554-.2.848-.2H20.2V4.3H3.8v11.673zm13.292-4.369a.9.9 0 010 1.792L17 13.4H7a.9.9 0 010-1.8h10l.092.005zm0-4.5a.9.9 0 010 1.792L17 8.9H7a.9.9 0 010-1.8h10l.092.004z" fill="currentColor"></path>
+                                             </svg>
+                                          </div>
+                                          <div class="tablet:subtitle2 caption1 flex-1 mobile:text-center">Phản hồi nhanh</div>
+                                       </div>
+                                       <input class="hidden" id="chat_upload_with_file" accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.rm,.rmvb,.mov,.wmv" type="file">
+                                       <label class="flex w-full cursor-pointer items-center justify-center gap-4xs px-m py-s mobile:flex-col" for="chat_upload_with_file">
+                                          <div class="flex shrink-0 items-center justify-center rounded-m border-line mobile:h-[40px] mobile:w-[40px] mobile:border">
+                                             <svg class="bn-svg h-[24px] w-[24px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M5.72 10.968a1.4 1.4 0 011.628.115l.095.087 6.093 6.093 3.514-3.122.107-.086a1.4 1.4 0 011.711.05l.102.092 3.167 3.166.061.069a.9.9 0 01-1.266 1.266l-.069-.061-2.9-2.9-3.152 2.801.826.825.061.069a.9.9 0 01-1.266 1.266l-.069-.061-7.948-7.949L3.04 15.22a.9.9 0 11-1.08-1.44l3.653-2.74.107-.072z" fill="currentColor"></path>
+                                                <path d="M14 7l2.828 2.828L14 12.657l-2.828-2.829L14 7z" fill="currentColor"></path>
+                                                <path d="M3.3 19.2h17.4V4.8H3.3v14.4zm19.2.3l-.008.153a1.5 1.5 0 01-1.339 1.34L21 21H3l-.153-.008a1.5 1.5 0 01-1.34-1.339L1.5 19.5v-15a1.5 1.5 0 011.347-1.492L3 3h18l.153.008A1.5 1.5 0 0122.5 4.5v15z" fill="currentColor"></path>
+                                             </svg>
+                                          </div>
+                                          <div class="tablet:subtitle2 caption1 flex-1 mobile:text-center">Tải lên</div>
+                                       </label>
+                                       <div class="flex w-full cursor-pointer items-center justify-center gap-4xs px-m py-s mobile:flex-col">
+                                          <div class="flex shrink-0 items-center justify-center rounded-m border-line mobile:h-[40px] mobile:w-[40px] mobile:border">
+                                             <svg class="bn-svg h-[24px] w-[24px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M13.5 16.85l.092.005a.9.9 0 010 1.79l-.092.005h-7a.9.9 0 010-1.8h7zM13.5 12.85l.092.005a.9.9 0 010 1.79l-.092.005h-7a.9.9 0 010-1.8h7zM7.4 9.1h2.2V6.9H7.4v2.2zm4 .4a1.4 1.4 0 01-1.4 1.4H7a1.4 1.4 0 01-1.4-1.4v-3A1.4 1.4 0 017 5.1h3a1.4 1.4 0 011.4 1.4v3z" fill="currentColor"></path>
+                                                <path d="M3.9 18.5c0 1.16.94 2.1 2.1 2.1h10.536V3.4H3.9v15.1zm14.436 2.1H19.5l.092.005a.9.9 0 010 1.79l-.092.005H6a3.9 3.9 0 01-3.9-3.9V3a1.4 1.4 0 011.4-1.4h13.436l.143.007A1.4 1.4 0 0118.336 3v17.6z" fill="currentColor"></path>
+                                                <path d="M18.4 19.633a.968.968 0 001.934 0V17.35H18.4v2.284zm3.734 0a2.767 2.767 0 11-5.534 0v-4.084h4.133a1.4 1.4 0 011.4 1.4v2.684z" fill="currentColor"></path>
+                                             </svg>
+                                          </div>
+                                          <div class="tablet:subtitle2 caption1 flex-1 mobile:text-center">Gửi quảng cáo</div>
+                                       </div>
+                                       <label class="flex w-full cursor-pointer items-center justify-center gap-4xs px-m py-s mobile:flex-col">
+                                          <div class="flex shrink-0 items-center justify-center rounded-m border-line mobile:h-[40px] mobile:w-[40px] mobile:border">
+                                             <svg class="bn-svg h-[24px] w-[24px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11.49 15c.45.05.81.43.81.9 0 .47-.35.85-.81.9H8.4c-.5 0-.9-.4-.9-.9s.4-.9.9-.9h3.09zm4-4c.45.05.81.43.81.9 0 .47-.35.85-.81.9H8.4c-.5 0-.9-.4-.9-.9s.4-.9.9-.9h7.09zm0-4c.45.05.81.43.81.9 0 .47-.35.85-.81.9H8.4c-.5 0-.9-.4-.9-.9s.4-.9.9-.9h7.09z" fill="currentColor"></path>
+                                                <path d="M20.8 13.69c0 .5-.4.9-.9.9s-.9-.4-.9-.9V3.3H4.8v17.2h7.5c.45.05.81.43.81.9 0 .47-.35.85-.81.9H4.4c-.77 0-1.4-.63-1.4-1.4v-18c0-.77.63-1.4 1.4-1.4h15c.77 0 1.4.63 1.4 1.4v10.79z" fill="currentColor"></path>
+                                                <path d="M13.5 18.95l3.75-3.75L21 18.95l-3.75 3.75-3.75-3.75z" fill="currentColor"></path>
+                                             </svg>
+                                          </div>
+                                          <div class="tablet:subtitle2 caption1 flex-1 mobile:text-center">Đăng quảng cáo riêng tư</div>
+                                       </label>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="bn-tooltips-wrap bn-tooltips-web w-full">
+                        <div aria-describedby="bn-tooltips-ApbAf5MI" class="bn-tooltips-ele">
+                           <div class="w-full">
+                              <div class="bn-textarea bn-textarea__line noMob:max-h-[86px] max-h-[82px] min-h-[40px] w-full rounded-m [&amp;_textarea]:g-[min-h-0,px-s,py-2xs,m-0] [&amp;_textarea]:h-[38px] [&amp;_.bn-textarea-suffix]:hidden">
+                                 <textarea aria-label="Nhập tin nhắn vào đây" class="bn-textarea-input" placeholder="Nhập tin nhắn vào đây" autocomplete="off" maxlength="500" style="height: 38px;"></textarea>
+                                 <div class="bn-textarea-suffix">0/500</div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
