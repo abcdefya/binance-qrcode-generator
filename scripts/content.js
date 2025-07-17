@@ -48,6 +48,19 @@ function setupObserver(pageContainer) {
     const presentationDiv = pageContainer.querySelector('div[role="presentation"]');
     if (presentationDiv) {
       console.log('Popup mở: div với role="presentation" được tìm thấy trong page-container:', presentationDiv);
+
+      // Trích xuất thông tin giao dịch
+      const transferInfo = extractBankTransferInfo(presentationDiv);
+      if (transferInfo) {
+        console.log('Thông tin giao dịch:', transferInfo);
+
+        // Tạo URL mã QR
+        const qrUrl = generateQRUrl(transferInfo);
+        console.log('URL mã QR:', qrUrl);
+
+        // Hiển thị mã QR
+        displayQRCode(qrUrl, transferInfo);
+      }
       console.log(true);
       return true;
     } else {
@@ -84,41 +97,6 @@ function setupObserver(pageContainer) {
   // Bắt đầu quan sát page-container
   observer.observe(pageContainer, config);
   checkForPresentationDiv();
-}
-
-// Start observing for the page-container
-setupPageContainerObserver();
-
-// Xử lý popup giao dịch khi nó xuất hiện
-async function handleTransactionPopup(popupNode) {
-  try {
-    console.log('QR Generator: Đã phát hiện popup giao dịch!');
-    
-    // Kiểm tra cài đặt
-    if (!autoShowQR) {
-      console.log('QR Generator: Tự động hiển thị QR đã bị tắt');
-      return;
-    }
-    
-    // Trích xuất thông tin từ popup
-    const transferInfo = extractBankTransferInfo(popupNode);
-    
-    if (!transferInfo || !transferInfo.accountNumber || !transferInfo.bankBin) {
-      console.error('QR Generator: Không thể trích xuất đủ thông tin giao dịch');
-      return;
-    }
-    
-    console.log('QR Generator: Thông tin giao dịch:', transferInfo);
-    
-    // Tạo URL mã QR
-    const qrUrl = generateQRUrl(transferInfo);
-    
-    // Hiển thị QR lên giao diện
-    displayQRCode(popupNode, qrUrl, transferInfo);
-    
-  } catch (error) {
-    console.error('QR Generator: Lỗi khi xử lý popup giao dịch:', error);
-  }
 }
 
 // Trích xuất thông tin chuyển khoản từ popup
@@ -329,26 +307,54 @@ function generateQRUrl(transferInfo) {
   return url;
 }
 
-// Hiển thị mã QR lên giao diện
-function displayQRCode(popupNode, qrUrl, transferInfo) {
-  // Tìm vị trí thích hợp để chèn QR code
-  const targetContainer = popupNode.querySelector('.css-n32ck1');
+// Function to display the QR code in a popup
+function displayQRCode(qrUrl, transferInfo) {
+  // Tạo popup mới
+  const qrPopup = document.createElement('div');
+  qrPopup.className = 'qr-popup-overlay';
+  qrPopup.style.position = 'fixed';
+  qrPopup.style.top = '0';
+  qrPopup.style.left = '0';
+  qrPopup.style.width = '100%';
+  qrPopup.style.height = '100%';
+  qrPopup.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+  qrPopup.style.zIndex = '9999';
+  qrPopup.style.display = 'flex';
+  qrPopup.style.justifyContent = 'center';
+  qrPopup.style.alignItems = 'center';
   
-  if (!targetContainer) {
-    console.error('QR Generator: Không tìm thấy vị trí để chèn mã QR');
-    return;
-  }
+  // Tạo nội dung popup
+  const qrPopupContent = document.createElement('div');
+  qrPopupContent.className = 'qr-popup-content';
+  qrPopupContent.style.backgroundColor = '#fff';
+  qrPopupContent.style.borderRadius = '8px';
+  qrPopupContent.style.padding = '20px';
+  qrPopupContent.style.maxWidth = '400px';
+  qrPopupContent.style.width = '90%';
+  qrPopupContent.style.textAlign = 'center';
+  qrPopupContent.style.position = 'relative';
+  qrPopupContent.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
   
-  // Tạo container cho QR code
-  const qrContainer = document.createElement('div');
-  qrContainer.className = 'qr-code-container px-m mb-2xs body3';
-  qrContainer.style.textAlign = 'center';
-  qrContainer.style.marginTop = '20px';
+  // Tạo nút đóng
+  const closeButton = document.createElement('div');
+  closeButton.textContent = '×';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '10px';
+  closeButton.style.right = '15px';
+  closeButton.style.fontSize = '24px';
+  closeButton.style.cursor = 'pointer';
+  closeButton.style.color = '#666';
+  closeButton.style.lineHeight = '1';
+  closeButton.onclick = () => {
+    document.body.removeChild(qrPopup);
+  };
   
   // Tạo tiêu đề
-  const qrTitle = document.createElement('div');
-  qrTitle.className = 'text-tertiaryText mb-m';
+  const qrTitle = document.createElement('h3');
   qrTitle.textContent = 'Mã QR Chuyển khoản';
+  qrTitle.style.margin = '0 0 15px 0';
+  qrTitle.style.fontSize = '18px';
+  qrTitle.style.color = '#333';
   
   // Tạo hình ảnh QR
   const qrImage = document.createElement('img');
@@ -356,48 +362,80 @@ function displayQRCode(popupNode, qrUrl, transferInfo) {
   qrImage.style.maxWidth = '100%';
   qrImage.style.width = 'auto';
   qrImage.style.height = 'auto';
+  qrImage.style.margin = '0 auto 15px';
   qrImage.style.display = 'block';
-  qrImage.style.margin = '0 auto';
   qrImage.alt = 'Mã QR chuyển khoản';
   
   // Thêm các phần tử vào container
-  qrContainer.appendChild(qrTitle);
-  qrContainer.appendChild(qrImage);
+  qrPopupContent.appendChild(closeButton);
+  qrPopupContent.appendChild(qrTitle);
+  qrPopupContent.appendChild(qrImage);
   
   // Kiểm tra cài đặt hiển thị thông tin chuyển khoản
-  if (showTransferInfo) {
+  if (showTransferInfo && transferInfo) {
     // Tạo thông tin chuyển khoản
-    const qrInfo = document.createElement('div');
-    qrInfo.className = 'qr-info mt-s';
-    qrInfo.innerHTML = `
-      <div class="flex justify-between">
-        <div class="flex w-[150px] flex-shrink-0 gap-4xs text-tertiaryText">
-          <div>Số tiền:</div>
-        </div>
-        <div class="flex flex-grow justify-end">
-          <div class="flex gap-2xs break-words">
-            <div>${new Intl.NumberFormat('vi-VN').format(transferInfo.amount)} VND</div>
-          </div>
-        </div>
-      </div>
-      <div class="flex justify-between">
-        <div class="flex w-[150px] flex-shrink-0 gap-4xs text-tertiaryText">
-          <div>Nội dung CK:</div>
-        </div>
-        <div class="flex flex-grow justify-end">
-          <div class="flex gap-2xs break-words">
-            <div>${transferInfo.referenceMessage}</div>
-          </div>
-        </div>
-      </div>
-    `;
-    qrContainer.appendChild(qrInfo);
+    const infoContainer = document.createElement('div');
+    infoContainer.style.textAlign = 'left';
+    infoContainer.style.margin = '15px 0 0 0';
+    infoContainer.style.padding = '10px';
+    infoContainer.style.backgroundColor = '#f5f5f5';
+    infoContainer.style.borderRadius = '4px';
+    
+    // Thêm thông tin số tiền
+    if (transferInfo.amount) {
+      const amountRow = document.createElement('div');
+      amountRow.style.display = 'flex';
+      amountRow.style.justifyContent = 'space-between';
+      amountRow.style.margin = '5px 0';
+      
+      const amountLabel = document.createElement('div');
+      amountLabel.textContent = 'Số tiền:';
+      amountLabel.style.color = '#666';
+      
+      const amountValue = document.createElement('div');
+      amountValue.textContent = `${new Intl.NumberFormat('vi-VN').format(transferInfo.amount)} VND`;
+      amountValue.style.fontWeight = 'bold';
+      
+      amountRow.appendChild(amountLabel);
+      amountRow.appendChild(amountValue);
+      infoContainer.appendChild(amountRow);
+    }
+    
+    // Thêm thông tin nội dung chuyển khoản
+    if (transferInfo.referenceMessage) {
+      const messageRow = document.createElement('div');
+      messageRow.style.display = 'flex';
+      messageRow.style.justifyContent = 'space-between';
+      messageRow.style.margin = '5px 0';
+      
+      const messageLabel = document.createElement('div');
+      messageLabel.textContent = 'Nội dung CK:';
+      messageLabel.style.color = '#666';
+      
+      const messageValue = document.createElement('div');
+      messageValue.textContent = transferInfo.referenceMessage;
+      messageValue.style.fontWeight = 'bold';
+      
+      messageRow.appendChild(messageLabel);
+      messageRow.appendChild(messageValue);
+      infoContainer.appendChild(messageRow);
+    }
+    
+    qrPopupContent.appendChild(infoContainer);
   }
   
-  // Chèn container vào popup
-  targetContainer.appendChild(qrContainer);
+  // Thêm popup vào body
+  qrPopup.appendChild(qrPopupContent);
+  document.body.appendChild(qrPopup);
   
-  console.log('QR Generator: Đã hiển thị mã QR thành công');
+  // Thêm sự kiện đóng khi click ra ngoài
+  qrPopup.addEventListener('click', (e) => {
+    if (e.target === qrPopup) {
+      document.body.removeChild(qrPopup);
+    }
+  });
+  
+  console.log('QR Generator: Đã hiển thị mã QR trong popup');
 }
 
 // Lắng nghe thông báo từ popup
