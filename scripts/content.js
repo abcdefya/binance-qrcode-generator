@@ -1,64 +1,66 @@
-// Theo dõi DOM để phát hiện popup giao dịch
-// Function to check for the presence of the page-container
+let isProcessing = false; // Cờ để ngăn xử lý lặp lại
+let qrContainer = null; // Biến để theo dõi div QR
+let isDragging = false; // Trạng thái kéo thả
+let isResizing = false; // Trạng thái thay đổi kích thước
+let dragStart = { x: 0, y: 0, left: 0, top: 0 }; // Lưu vị trí bắt đầu kéo
+let resizeStart = { x: 0, y: 0, width: 0, height: 0 }; // Lưu kích thước bắt đầu
+
 function waitForPageContainer(callback) {
-  const pageContainer = document.getElementById('page-container');
+  const pageContainer = document.getElementById('page-container') || document.body;
   if (pageContainer) {
     callback(pageContainer);
   } else {
-    console.log('Đang chờ phần tử page-container xuất hiện...');
-    setTimeout(() => waitForPageContainer(callback), 100); // Check every 100ms
+    setTimeout(() => waitForPageContainer(callback), 100);
   }
 }
 
-// Function to set up the MutationObserver for the page-container
 function setupPageContainerObserver() {
-  console.log('QR Generator: Đang theo dõi sự xuất hiện của page-container...');
-
-  // Tạo MutationObserver để theo dõi thay đổi DOM
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.addedNodes.length) {
         mutation.addedNodes.forEach((node) => {
-          if (node.nodeType === Node.ELEMENT_NODE && node.id === 'page-container') {
-            console.log('Đã tìm thấy page-container:', node);
-            setupObserver(node); // Set up the observer for the presentation div
-            observer.disconnect(); // Ngừng theo dõi sau khi tìm thấy
+          if (node.nodeType === Node.ELEMENT_NODE && (node.id === 'page-container' || node.tagName === 'BODY')) {
+            setupObserver(node);
+            observer.disconnect();
           }
         });
       }
     });
   });
-
-  // Cấu hình observer
-  const config = {
-    childList: true,
-    subtree: true
-  };
-
-  // Bắt đầu quan sát document.body
+  const config = { childList: true, subtree: true };
   observer.observe(document.body, config);
 }
 
-// Function to set up the MutationObserver for the presentation div
 function setupObserver(pageContainer) {
-  console.log('QR Generator: Đang theo dõi popup giao dịch...');
+  let observer; // Biến để lưu MutationObserver
 
-  // Hàm kiểm tra div với role="presentation" trong page-container
   function checkForPresentationDiv() {
-    const presentationDiv = pageContainer.querySelector('div[role="presentation"]');
-    if (presentationDiv) {
-      console.log('Popup mở: div với role="presentation" được tìm thấy trong page-container:', presentationDiv);
-      console.log(true);
+    const presentationDiv = pageContainer.querySelector('div[role="presentation"].bn-mask.bn-modal');
+    if (presentationDiv && !isProcessing) {
+      const orderNumberElement = presentationDiv.querySelector('div[data-bn-type="text"].css-14yjdiq');
+      if (!orderNumberElement) {
+        return false; // Chờ DOM render hoàn chỉnh
+      }
+      isProcessing = true;
+      observer.disconnect(); // Dừng observer để tránh lặp
+      handleTransactionPopup(presentationDiv).finally(() => {
+        isProcessing = false;
+        observer.observe(pageContainer, config); // Tiếp tục theo dõi
+      });
       return true;
-    } else {
-      console.log('Popup đóng: không tìm thấy div với role="presentation" trong page-container.');
-      console.log(false);
+    } else if (!presentationDiv && isProcessing) {
+      if (qrContainer) {
+        qrContainer.remove(); // Xóa div QR khi popup đóng
+        qrContainer = null;
+      }
+      isProcessing = false;
+      observer.observe(pageContainer, config); // Tiếp tục theo dõi
       return false;
     }
+    return false;
   }
 
-  // Tạo MutationObserver để theo dõi thay đổi DOM
-  const observer = new MutationObserver((mutations) => {
+  observer = new MutationObserver((mutations) => {
     let shouldCheck = false;
     mutations.forEach((mutation) => {
       if (mutation.addedNodes.length || mutation.removedNodes.length) {
@@ -72,58 +74,175 @@ function setupObserver(pageContainer) {
       checkForPresentationDiv();
     }
   });
-
-  // Cấu hình observer
   const config = {
     childList: true,
     subtree: true,
     attributes: true,
     attributeFilter: ['role']
   };
-
-  // Bắt đầu quan sát page-container
   observer.observe(pageContainer, config);
   checkForPresentationDiv();
 }
 
-// Start observing for the page-container
-setupPageContainerObserver();
-
-// Xử lý popup giao dịch khi nó xuất hiện
 async function handleTransactionPopup(popupNode) {
   try {
-    console.log('QR Generator: Đã phát hiện popup giao dịch!');
-    
-    // Kiểm tra cài đặt
     if (!autoShowQR) {
-      console.log('QR Generator: Tự động hiển thị QR đã bị tắt');
       return;
     }
-    
-    // Trích xuất thông tin từ popup
-    const transferInfo = extractBankTransferInfo(popupNode);
-    
+    const transferInfo = await extractBankTransferInfo(popupNode);
+    console.log('QR Generator: Kết quả trích xuất transferInfo:', transferInfo);
     if (!transferInfo || !transferInfo.accountNumber || !transferInfo.bankBin) {
       console.error('QR Generator: Không thể trích xuất đủ thông tin giao dịch');
       return;
     }
-    
     console.log('QR Generator: Thông tin giao dịch:', transferInfo);
-    
-    // Tạo URL mã QR
     const qrUrl = generateQRUrl(transferInfo);
+    console.log('QR Generator: Đường link QR:', qrUrl);
     
-    // Hiển thị QR lên giao diện
-    displayQRCode(popupNode, qrUrl, transferInfo);
-    
+    // Hiển thị ảnh QR
+    if (autoShowQR && qrUrl) {
+      showQRImage(qrUrl);
+    }
   } catch (error) {
     console.error('QR Generator: Lỗi khi xử lý popup giao dịch:', error);
   }
 }
 
-// Trích xuất thông tin chuyển khoản từ popup
-function extractBankTransferInfo(document) {
-  // Khởi tạo đối tượng để lưu thông tin
+function showQRImage(qrUrl) {
+  // Xóa div QR cũ nếu tồn tại
+  if (qrContainer) {
+    qrContainer.remove();
+    qrContainer = null;
+  }
+
+  // Tạo div QR mới
+  qrContainer = document.createElement('div');
+  qrContainer.id = 'qr-floating-container';
+  qrContainer.style.position = 'absolute';
+  qrContainer.style.bottom = '500px';
+  qrContainer.style.right = '300px';
+  qrContainer.style.zIndex = '9999';
+  qrContainer.style.background = 'white';
+  qrContainer.style.padding = '10px';
+  qrContainer.style.border = '1px solid #ccc';
+  qrContainer.style.borderRadius = '5px';
+  qrContainer.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+  qrContainer.style.cursor = 'move'; // Con trỏ chuột khi kéo
+
+  // Tạo ảnh QR
+  const qrImage = document.createElement('img');
+  qrImage.src = qrUrl;
+  qrImage.style.width = '600px';
+  qrImage.style.height = '700px';
+  qrImage.style.display = 'block';
+  qrImage.style.userSelect = 'none'; // Ngăn chọn ảnh
+  qrImage.draggable = false; // Ngăn kéo mặc định của trình duyệt
+  qrImage.onerror = () => {
+    console.error('QR Generator: Lỗi khi tải ảnh QR từ:', qrUrl);
+    qrContainer.remove();
+    qrContainer = null;
+  };
+
+  // Tạo nút đóng
+  const closeButton = document.createElement('button');
+  closeButton.textContent = 'X';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '5px';
+  closeButton.style.right = '5px';
+  closeButton.style.background = '#ff4d4f';
+  closeButton.style.color = 'white';
+  closeButton.style.border = 'none';
+  closeButton.style.borderRadius = '3px';
+  closeButton.style.cursor = 'pointer';
+  closeButton.style.padding = '2px 6px';
+  closeButton.onclick = () => {
+    qrContainer.remove();
+    qrContainer = null;
+  };
+
+  // Tạo resize handle
+  const resizeHandle = document.createElement('div');
+  resizeHandle.style.position = 'absolute';
+  resizeHandle.style.bottom = '0';
+  resizeHandle.style.right = '0';
+  resizeHandle.style.width = '10px';
+  resizeHandle.style.height = '10px';
+  resizeHandle.style.background = '#ccc';
+  resizeHandle.style.cursor = 'se-resize';
+
+  // Logic kéo thả
+  qrContainer.addEventListener('mousedown', (e) => {
+    if (e.target === closeButton || e.target === resizeHandle) return;
+    isDragging = true;
+    dragStart.x = e.clientX;
+    dragStart.y = e.clientY;
+    dragStart.left = qrContainer.offsetLeft;
+    dragStart.top = qrContainer.offsetTop;
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      const deltaX = e.clientX - dragStart.x;
+      const deltaY = e.clientY - dragStart.y;
+      let newLeft = dragStart.left + deltaX;
+      let newTop = dragStart.top + deltaY;
+
+      // Giới hạn kéo trong màn hình
+      newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - qrContainer.offsetWidth));
+      newTop = Math.max(0, Math.min(newTop, window.innerHeight - qrContainer.offsetHeight));
+
+      qrContainer.style.left = `${newLeft}px`;
+      qrContainer.style.top = `${newTop}px`;
+      qrContainer.style.right = 'auto';
+      qrContainer.style.bottom = 'auto';
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  // Logic thay đổi kích thước
+  resizeHandle.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    resizeStart.x = e.clientX;
+    resizeStart.y = e.clientY;
+    resizeStart.width = qrContainer.offsetWidth;
+    resizeStart.height = qrContainer.offsetHeight;
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isResizing) {
+      const deltaX = e.clientX - resizeStart.x;
+      const deltaY = e.clientY - resizeStart.y;
+      let newWidth = resizeStart.width + deltaX;
+      let newHeight = resizeStart.height + deltaY;
+
+      // Giới hạn kích thước tối thiểu
+      newWidth = Math.max(100, newWidth);
+      newHeight = Math.max(100, newHeight);
+
+      qrContainer.style.width = `${newWidth}px`;
+      qrContainer.style.height = `${newHeight}px`;
+      qrImage.style.width = `${newWidth - 20}px`; // Trừ padding
+      qrImage.style.height = `${newHeight - 20}px`; // Trừ padding
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    isResizing = false;
+  });
+
+  // Thêm các phần tử vào container
+  qrContainer.appendChild(closeButton);
+  qrContainer.appendChild(qrImage);
+  qrContainer.appendChild(resizeHandle);
+  document.body.appendChild(qrContainer);
+}
+
+async function extractBankTransferInfo(document) {
   const transferInfo = {
     paymentMethod: null,
     accountName: null,
@@ -137,43 +256,30 @@ function extractBankTransferInfo(document) {
     orderType: null,
     orderNumber: null
   };
-
   try {
-    // Lấy mã đơn hàng (số tham chiếu)
     const orderNumberElement = document.querySelector('div[data-bn-type="text"].css-14yjdiq');
     if (orderNumberElement) {
       transferInfo.orderNumber = orderNumberElement.textContent.trim();
       transferInfo.referenceMessage = transferInfo.orderNumber;
     }
-
-    // Lấy phương thức thanh toán
     const paymentMethodElement = document.querySelector('.PaymentMethodItem__text');
     if (paymentMethodElement) {
       transferInfo.paymentMethod = paymentMethodElement.textContent.trim();
     }
-
-    // Lấy tổng số tiền giao dịch (VND)
     const amountElement = document.querySelector('.sc-jJMGnK');
     if (amountElement) {
       const amountText = amountElement.textContent.trim();
-      // Sử dụng regex để chỉ trích xuất số
       const amountMatch = amountText.match(/[\d,]+\.\d+|\d+/);
       if (amountMatch) {
         transferInfo.amount = amountMatch[0].replace(/,/g, '');
       }
     }
-
-    // Lấy loại giao dịch (Mua/Bán)
     const orderTypeElement = document.querySelector('.css-vurnku');
     if (orderTypeElement) {
       const orderTypeText = orderTypeElement.textContent;
       transferInfo.orderType = orderTypeText.includes('Mua') ? 'buy' : (orderTypeText.includes('Bán') ? 'sell' : null);
     }
-
-    // Xác định loại hình thức thanh toán
     const isVietnamBankTransfer = transferInfo.paymentMethod && transferInfo.paymentMethod.includes('(Việt Nam)');
-    
-    // Tạo map các label cần tìm để tránh kiểm tra nhiều lần
     const labelMap = isVietnamBankTransfer ? {
       'Họ và tên': 'accountName',
       'Tên ngân hàng': 'bankName',
@@ -187,43 +293,30 @@ function extractBankTransferInfo(document) {
       'Chi nhánh mở tài khoản': 'bankBranch',
       'Nội dung chuyển khoản': 'referenceMessage'
     };
-    
-    // Lấy tất cả các hàng thông tin một lần và xử lý
     const infoRows = document.querySelectorAll('.flex.justify-between');
-    
     infoRows.forEach(row => {
       const labelElement = row.querySelector('.text-tertiaryText div');
       const valueElement = row.querySelector('.flex.flex-grow.justify-end .break-words div');
-      
-      if (labelElement && valueElement) {
-        const label = labelElement.textContent.trim();
-        const value = valueElement.textContent.trim();
-        
-        // Sử dụng map để tìm trường cần gán
-        const field = labelMap[label];
-        if (field) {
-          // Xử lý đặc biệt cho số tài khoản
-          if (field === 'accountNumber') {
-            transferInfo[field] = value.replace(/[^0-9]/g, '');
-          } else {
-            transferInfo[field] = value;
-          }
+      const labelText = labelElement?.textContent?.trim();
+      const valueText = valueElement?.textContent?.trim();
+      if (labelText && valueText && labelMap[labelText]) {
+        const field = labelMap[labelText];
+        if (field === 'accountNumber') {
+          transferInfo[field] = valueText.replace(/[^0-9]/g, '');
+        } else {
+          transferInfo[field] = valueText;
         }
       }
     });
-
-    // Ánh xạ tên ngân hàng với thông tin từ bankList.json
     if (transferInfo.bankName) {
-      getBankList().then(bankList => {
-        const bankInfo = mapBankName(transferInfo.bankName, bankList);
-        if (bankInfo) {
-          transferInfo.bankName = bankInfo.name;
-          transferInfo.bankBin = bankInfo.bin;
-          transferInfo.bankCode = bankInfo.code;
-        }
-      });
+      const bankList = await getBankList();
+      const bankInfo = mapBankName(transferInfo.bankName, bankList);
+      if (bankInfo) {
+        transferInfo.bankName = bankInfo.name;
+        transferInfo.bankBin = bankInfo.bin;
+        transferInfo.bankCode = bankInfo.code;
+      }
     }
-
     return transferInfo;
   } catch (error) {
     console.error('QR Generator: Lỗi khi trích xuất thông tin:', error);
@@ -231,7 +324,6 @@ function extractBankTransferInfo(document) {
   }
 }
 
-// Lấy danh sách ngân hàng từ file JSON
 async function getBankList() {
   try {
     const response = await fetch(chrome.runtime.getURL('bankList.json'));
@@ -242,14 +334,10 @@ async function getBankList() {
   }
 }
 
-// Ánh xạ tên ngân hàng với thông tin từ bankList.json
 function mapBankName(inputBankName, bankList) {
   if (!inputBankName || !bankList) return null;
-  
   const normalizedInput = inputBankName.toLowerCase().trim();
   let result = null;
-
-  // So khớp chính xác với short_name và code
   for (const bankKey in bankList) {
     const bank = bankList[bankKey];
     if (
@@ -264,15 +352,11 @@ function mapBankName(inputBankName, bankList) {
       return result;
     }
   }
-
-  // So khớp đơn giản bằng includes
   for (const bankKey in bankList) {
     const bank = bankList[bankKey];
     const normalizedShortName = (bank.short_name || '').toLowerCase().trim();
     const normalizedCode = (bank.code || '').toLowerCase().trim();
     const normalizedName = (bank.name || '').toLowerCase().trim();
-    
-    // Kiểm tra nếu chuỗi input chứa tên ngân hàng hoặc ngược lại
     if (
       (normalizedShortName && (normalizedInput.includes(normalizedShortName) || normalizedShortName.includes(normalizedInput))) ||
       (normalizedCode && (normalizedInput.includes(normalizedCode) || normalizedCode.includes(normalizedInput))) ||
@@ -286,144 +370,55 @@ function mapBankName(inputBankName, bankList) {
       return result;
     }
   }
-
   return null;
 }
 
-// Tạo URL mã QR VietQR từ thông tin chuyển khoản
 function generateQRUrl(transferInfo) {
   if (!transferInfo || !transferInfo.accountNumber) {
     throw new Error('Thông tin chuyển khoản không hợp lệ');
   }
-
-  // Ưu tiên sử dụng bankBin, nếu không có thì dùng bankCode
   const bankId = transferInfo.bankBin || transferInfo.bankCode;
   if (!bankId) {
     throw new Error('Không tìm thấy mã ngân hàng');
   }
-
-  // Tạo URL cơ bản với template print (600x776)
   let url = `https://img.vietqr.io/image/${bankId}-${transferInfo.accountNumber}-print.png`;
-  
-  // Thêm các tham số
   const params = new URLSearchParams();
-  
   if (transferInfo.amount) {
     params.append('amount', transferInfo.amount);
   }
-  
   if (transferInfo.referenceMessage) {
     params.append('addInfo', transferInfo.referenceMessage);
   }
-  
   if (transferInfo.accountName) {
     params.append('accountName', transferInfo.accountName.toUpperCase());
   }
-  
-  // Thêm tham số vào URL
   const queryString = params.toString();
   if (queryString) {
     url += '?' + queryString;
   }
-  
   return url;
 }
 
-// Hiển thị mã QR lên giao diện
-function displayQRCode(popupNode, qrUrl, transferInfo) {
-  // Tìm vị trí thích hợp để chèn QR code
-  const targetContainer = popupNode.querySelector('.css-n32ck1');
-  
-  if (!targetContainer) {
-    console.error('QR Generator: Không tìm thấy vị trí để chèn mã QR');
-    return;
-  }
-  
-  // Tạo container cho QR code
-  const qrContainer = document.createElement('div');
-  qrContainer.className = 'qr-code-container px-m mb-2xs body3';
-  qrContainer.style.textAlign = 'center';
-  qrContainer.style.marginTop = '20px';
-  
-  // Tạo tiêu đề
-  const qrTitle = document.createElement('div');
-  qrTitle.className = 'text-tertiaryText mb-m';
-  qrTitle.textContent = 'Mã QR Chuyển khoản';
-  
-  // Tạo hình ảnh QR
-  const qrImage = document.createElement('img');
-  qrImage.src = qrUrl;
-  qrImage.style.maxWidth = '100%';
-  qrImage.style.width = 'auto';
-  qrImage.style.height = 'auto';
-  qrImage.style.display = 'block';
-  qrImage.style.margin = '0 auto';
-  qrImage.alt = 'Mã QR chuyển khoản';
-  
-  // Thêm các phần tử vào container
-  qrContainer.appendChild(qrTitle);
-  qrContainer.appendChild(qrImage);
-  
-  // Kiểm tra cài đặt hiển thị thông tin chuyển khoản
-  if (showTransferInfo) {
-    // Tạo thông tin chuyển khoản
-    const qrInfo = document.createElement('div');
-    qrInfo.className = 'qr-info mt-s';
-    qrInfo.innerHTML = `
-      <div class="flex justify-between">
-        <div class="flex w-[150px] flex-shrink-0 gap-4xs text-tertiaryText">
-          <div>Số tiền:</div>
-        </div>
-        <div class="flex flex-grow justify-end">
-          <div class="flex gap-2xs break-words">
-            <div>${new Intl.NumberFormat('vi-VN').format(transferInfo.amount)} VND</div>
-          </div>
-        </div>
-      </div>
-      <div class="flex justify-between">
-        <div class="flex w-[150px] flex-shrink-0 gap-4xs text-tertiaryText">
-          <div>Nội dung CK:</div>
-        </div>
-        <div class="flex flex-grow justify-end">
-          <div class="flex gap-2xs break-words">
-            <div>${transferInfo.referenceMessage}</div>
-          </div>
-        </div>
-      </div>
-    `;
-    qrContainer.appendChild(qrInfo);
-  }
-  
-  // Chèn container vào popup
-  targetContainer.appendChild(qrContainer);
-  
-  console.log('QR Generator: Đã hiển thị mã QR thành công');
-}
-
-// Lắng nghe thông báo từ popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'SETTINGS_CHANGED') {
-    // Cập nhật cài đặt
     if (message.settings.hasOwnProperty('autoShowQR')) {
       autoShowQR = message.settings.autoShowQR;
+      if (!autoShowQR && qrContainer) {
+        qrContainer.remove();
+        qrContainer = null;
+      }
     }
-    
     if (message.settings.hasOwnProperty('showTransferInfo')) {
       showTransferInfo = message.settings.showTransferInfo;
     }
-    
-    // Phản hồi để xác nhận đã nhận
     sendResponse({ success: true });
   }
-  
-  return true; // Giữ kết nối mở cho phản hồi bất đồng bộ
+  return true;
 });
 
-// Biến lưu cài đặt
 let autoShowQR = true;
 let showTransferInfo = true;
 
-// Tải cài đặt khi khởi động
 chrome.storage.sync.get({
   autoShowQR: true,
   showTransferInfo: true
@@ -432,16 +427,10 @@ chrome.storage.sync.get({
   showTransferInfo = settings.showTransferInfo;
 });
 
-// Khởi chạy khi trang web đã tải xong
 window.addEventListener('load', () => {
-  console.log('QR Generator: Extension đã khởi động');
-  // The setupPopupObserver function is now called within waitForPageContainer
-  
-  // Kiểm tra nếu popup đã có sẵn khi tải trang
-  const existingPopups = document.querySelectorAll('.bn-modal-wrap');
+  setupPageContainerObserver();
+  const existingPopups = document.querySelectorAll('div[role="presentation"].bn-mask.bn-modal');
   existingPopups.forEach(popup => {
-    if (popup.querySelector('.css-14yjdiq')) {
-      handleTransactionPopup(popup);
-    }
+    handleTransactionPopup(popup);
   });
 });
