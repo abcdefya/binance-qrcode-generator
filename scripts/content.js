@@ -1,15 +1,21 @@
 // Theo dõi DOM để phát hiện popup giao dịch
-function setupPopupObserver() {
+// Function to check for the presence of the page-container
+function waitForPageContainer(callback) {
+  const pageContainer = document.getElementById('page-container');
+  if (pageContainer) {
+    callback(pageContainer);
+  } else {
+    console.log('Đang chờ phần tử page-container xuất hiện...');
+    setTimeout(() => waitForPageContainer(callback), 100); // Check every 100ms
+  }
+}
+
+// Function to set up the MutationObserver
+function setupObserver(pageContainer) {
   console.log('QR Generator: Đang theo dõi popup giao dịch...');
-  
+
   // Hàm kiểm tra div với role="presentation" trong page-container
   function checkForPresentationDiv() {
-    const pageContainer = document.getElementById('page-container');
-    if (!pageContainer) {
-      console.error('Không tìm thấy phần tử với id="page-container" trong DOM.');
-      console.log(false);
-      return false;
-    }
     const presentationDiv = pageContainer.querySelector('div[role="presentation"]');
     if (presentationDiv) {
       console.log('Popup mở: div với role="presentation" được tìm thấy trong page-container:', presentationDiv);
@@ -46,15 +52,13 @@ function setupPopupObserver() {
     attributeFilter: ['role']
   };
 
-  // Lấy phần tử page-container để quan sát
-  const pageContainer = document.getElementById('page-container');
-  if (pageContainer) {
-    observer.observe(pageContainer, config);
-    checkForPresentationDiv();
-  } else {
-    console.error('Không tìm thấy phần tử với id="page-container" trong DOM.');
-  }
+  // Bắt đầu quan sát page-container
+  observer.observe(pageContainer, config);
+  checkForPresentationDiv();
 }
+
+// Start waiting for the page-container
+waitForPageContainer(setupObserver);
 
 // Xử lý popup giao dịch khi nó xuất hiện
 async function handleTransactionPopup(popupNode) {
@@ -402,7 +406,7 @@ chrome.storage.sync.get({
 // Khởi chạy khi trang web đã tải xong
 window.addEventListener('load', () => {
   console.log('QR Generator: Extension đã khởi động');
-  setupPopupObserver();
+  // The setupPopupObserver function is now called within waitForPageContainer
   
   // Kiểm tra nếu popup đã có sẵn khi tải trang
   const existingPopups = document.querySelectorAll('.bn-modal-wrap');
