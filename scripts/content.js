@@ -10,7 +10,36 @@ function waitForPageContainer(callback) {
   }
 }
 
-// Function to set up the MutationObserver
+// Function to set up the MutationObserver for the page-container
+function setupPageContainerObserver() {
+  console.log('QR Generator: Đang theo dõi sự xuất hiện của page-container...');
+
+  // Tạo MutationObserver để theo dõi thay đổi DOM
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.addedNodes.length) {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE && node.id === 'page-container') {
+            console.log('Đã tìm thấy page-container:', node);
+            setupObserver(node); // Set up the observer for the presentation div
+            observer.disconnect(); // Ngừng theo dõi sau khi tìm thấy
+          }
+        });
+      }
+    });
+  });
+
+  // Cấu hình observer
+  const config = {
+    childList: true,
+    subtree: true
+  };
+
+  // Bắt đầu quan sát document.body
+  observer.observe(document.body, config);
+}
+
+// Function to set up the MutationObserver for the presentation div
 function setupObserver(pageContainer) {
   console.log('QR Generator: Đang theo dõi popup giao dịch...');
 
@@ -57,8 +86,8 @@ function setupObserver(pageContainer) {
   checkForPresentationDiv();
 }
 
-// Start waiting for the page-container
-waitForPageContainer(setupObserver);
+// Start observing for the page-container
+setupPageContainerObserver();
 
 // Xử lý popup giao dịch khi nó xuất hiện
 async function handleTransactionPopup(popupNode) {
