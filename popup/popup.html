@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binance QR Generator</title>
+  <style>
+    body {
+      width: 320px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #eaeaea;
+      padding-bottom: 8px;
+    }
+    
+    .logo {
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+    }
+    
+    h1 {
+      font-size: 16px;
+      margin: 0;
+      color: #1E2329;
+    }
+    
+    .status {
+      margin-bottom: 16px;
+      padding: 12px;
+      border-radius: 4px;
+      background-color: #F5F5F5;
+    }
+    
+    .status.active {
+      background-color: #E6F7FF;
+      border-left: 4px solid #1677FF;
+    }
+    
+    .status-text {
+      font-size: 14px;
+      color: #474D57;
+    }
+    
+    .status-text.active {
+      color: #1677FF;
+    }
+    
+    .settings {
+      margin-top: 16px;
+    }
+    
+    .toggle-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .toggle-label {
+      font-size: 14px;
+      color: #1E2329;
+    }
+    
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+    }
+    
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 20px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: #F0B90B;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    
+    .footer {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #707A8A;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="../icons/icon48.png" alt="Logo" class="logo">
+    <h1>Binance QR Generator</h1>
+  </div>
+  
+  <div id="status" class="status active">
+    <p class="status-text active">Extension đang hoạt động trên Binance</p>
+  </div>
+  
+  <div class="settings">
+    <div class="toggle-container">
+      <span class="toggle-label">Tự động hiển thị mã QR</span>
+      <label class="toggle">
+        <input type="checkbox" id="autoShowQR" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    
+    <div class="toggle-container">
+      <span class="toggle-label">Hiển thị thông tin chuyển khoản</span>
+      <label class="toggle">
+        <input type="checkbox" id="showTransferInfo" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <p>VietQR Generator v1.0</p>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
