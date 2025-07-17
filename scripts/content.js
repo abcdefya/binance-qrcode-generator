@@ -54,18 +54,22 @@ function setupObserver(pageContainer) {
       if (transferInfo) {
         console.log('Thông tin giao dịch:', transferInfo);
 
-        // Tạo URL mã QR
-        const qrUrl = generateQRUrl(transferInfo);
-        console.log('URL mã QR:', qrUrl);
+        try {
+          // Tạo URL mã QR
+          const qrUrl = generateQRUrl(transferInfo);
+          console.log('URL mã QR:', qrUrl);
 
-        // Hiển thị mã QR
-        displayQRCode(qrUrl, transferInfo);
+          // Hiển thị mã QR
+          displayQRCode(qrUrl, transferInfo);
+        } catch (error) {
+          console.error('Lỗi khi tạo URL mã QR:', error);
+        }
+      } else {
+        console.error('Không thể trích xuất thông tin giao dịch.');
       }
-      console.log(true);
       return true;
     } else {
       console.log('Popup đóng: không tìm thấy div với role="presentation" trong page-container.');
-      console.log(false);
       return false;
     }
   }
