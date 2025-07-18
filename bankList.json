@@ -10,7 +10,8 @@
         "short_name": "VietinBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "ICBVVNVX"
+        "swift_code": "ICBVVNVX",
+        "keywords": ["VietinBank", "Vietin", "Công thương", "Cong thuong", "ICB", "Vietin Bank"]
     },
     "Vietcombank": {
         "id": 43,
@@ -23,7 +24,8 @@
         "short_name": "Vietcombank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "BFTVVNVX"
+        "swift_code": "BFTVVNVX",
+        "keywords": ["Vietcombank", "Vietcom", "Ngoại thương", "Ngoai thuong", "VCB", "Vietcom Bank"]
     },
     "BIDV": {
         "id": 4,
@@ -36,7 +38,8 @@
         "short_name": "BIDV",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "BIDVVNVX"
+        "swift_code": "BIDVVNVX",
+        "keywords": ["BIDV", "Đầu tư", "Phát triển", "Dau tu", "Phat trien", "BIDV Bank"]
     },
     "Agribank": {
         "id": 42,
@@ -49,7 +52,8 @@
         "short_name": "Agribank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "VBAAVNVX"
+        "swift_code": "VBAAVNVX",
+        "keywords": ["Agribank", "Nông nghiệp", "Phát triển nông thôn", "Nong nghiep", "Phat trien nong thon", "VBA", "Agri Bank"]
     },
     "OCB": {
         "id": 26,
@@ -62,7 +66,8 @@
         "short_name": "OCB",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "ORCOVNVX"
+        "swift_code": "ORCOVNVX",
+        "keywords": ["OCB", "Phương Đông", "Phuong Dong", "OCB Bank"]
     },
     "MBBank": {
         "id": 21,
@@ -75,7 +80,8 @@
         "short_name": "MBBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "MSCBVNVX"
+        "swift_code": "MSCBVNVX",
+        "keywords": ["MBBank", "MB Bank", "mbank", "Quân đội", "Quan doi", "MB"]
     },
     "Techcombank": {
         "id": 38,
@@ -88,7 +94,8 @@
         "short_name": "Techcombank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "VTCBVNVX"
+        "swift_code": "VTCBVNVX",
+        "keywords": ["Techcombank", "Techcom", "Kỹ thương", "Ky thuong", "TCB", "Techcom Bank"]
     },
     "ACB": {
         "id": 2,
@@ -101,7 +108,8 @@
         "short_name": "ACB",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "ASCBVNVX"
+        "swift_code": "ASCBVNVX",
+        "keywords": ["ACB", "Á Châu", "A Chau", "ACB Bank"]
     },
     "VPBank": {
         "id": 47,
@@ -114,7 +122,8 @@
         "short_name": "VPBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "VPBKVNVX"
+        "swift_code": "VPBKVNVX",
+        "keywords": ["VPBank", "Việt Nam Thịnh Vượng", "Thịnh Vượng", "Thinh Vuong", "VPB", "VP Bank"]
     },
     "TPBank": {
         "id": 39,
@@ -127,7 +136,8 @@
         "short_name": "TPBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "TPBVVNVX"
+        "swift_code": "TPBVVNVX",
+        "keywords": ["TPBank", "Tiên Phong", "Tien Phong", "TPB", "TP Bank"]
     },
     "Sacombank": {
         "id": 36,
@@ -138,9 +148,10 @@
         "transferSupported": 1,
         "lookupSupported": 1,
         "short_name": "Sacombank",
-        "support": 3,
+        "support": 1,
         "isTransfer": 1,
-        "swift_code": "SGTTVNVX"
+        "swift_code": "SGTTVNVX",
+        "keywords": ["Sacombank", "Sài Gòn Thương Tín", "Sai Gon Thuong Tin", "STB", "Sacom Bank"]
     },
     "HDBank": {
         "id": 12,
@@ -153,7 +164,8 @@
         "short_name": "HDBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "HDBCVNVX"
+        "swift_code": "HDBCVNVX",
+        "keywords": ["HDBank", "Phát triển TP HCM", "Phat trien TP HCM", "HDB", "HD Bank"]
     },
     "VietCapitalBank": {
         "id": 44,
@@ -166,7 +178,8 @@
         "short_name": "VietCapitalBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "VCBCVNVX"
+        "swift_code": "VCBCVNVX",
+        "keywords": ["VietCapitalBank", "Viet Capital", "Bản Việt", "Ban Viet", "VCCB", "VietCapital Bank"]
     },
     "SCB": {
         "id": 31,
@@ -179,7 +192,8 @@
         "short_name": "SCB",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "SACLVNVX"
+        "swift_code": "SACLVNVX",
+        "keywords": ["SCB", "Sài Gòn", "Sai Gon", "SCB Bank"]
     },
     "VIB": {
         "id": 45,
@@ -192,7 +206,8 @@
         "short_name": "VIB",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "VNIBVNVX"
+        "swift_code": "VNIBVNVX",
+        "keywords": ["VIB", "Quốc tế", "Quoc te", "VIB Bank"]
     },
     "SHB": {
         "id": 35,
@@ -205,7 +220,8 @@
         "short_name": "SHB",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "SHBAVNVX"
+        "swift_code": "SHBAVNVX",
+        "keywords": ["SHB", "Sài Gòn Hà Nội", "Sai Gon Ha Noi", "SHB Bank"]
     },
     "Eximbank": {
         "id": 10,
@@ -218,7 +234,8 @@
         "short_name": "Eximbank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "EBVIVNVX"
+        "swift_code": "EBVIVNVX",
+        "keywords": ["Eximbank", "Xuất nhập khẩu", "Xuat nhap khau", "EIB", "Exim Bank"]
     },
     "MSB": {
         "id": 22,
@@ -231,7 +248,8 @@
         "short_name": "MSB",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "MCOBVNVX"
+        "swift_code": "MCOBVNVX",
+        "keywords": ["MSB", "Hàng Hải", "Hang Hai", "MSB Bank"]
     },
     "CAKE": {
         "id": 53,
@@ -244,7 +262,8 @@
         "short_name": "CAKE",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["CAKE", "CAKE by VPBank", "Ngân hàng số CAKE", "Ngan hang so CAKE"]
     },
     "Ubank": {
         "id": 54,
@@ -257,7 +276,8 @@
         "short_name": "Ubank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["Ubank", "Ubank by VPBank", "Ngân hàng số Ubank", "Ngan hang so Ubank"]
     },
     "Timo": {
         "id": 58,
@@ -270,7 +290,8 @@
         "short_name": "Timo",
         "support": 0,
         "isTransfer": 1,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["Timo", "Timo by Ban Viet", "Ngân hàng số Timo", "Ngan hang so Timo"]
     },
     "ViettelMoney": {
         "id": 57,
@@ -283,7 +304,8 @@
         "short_name": "ViettelMoney",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["ViettelMoney", "Viettel Money", "Viettel", "VTLMONEY"]
     },
     "VNPTMoney": {
         "id": 56,
@@ -296,7 +318,8 @@
         "short_name": "VNPTMoney",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["VNPTMoney", "VNPT Money", "VNPT", "VNPTMONEY"]
     },
     "SaigonBank": {
         "id": 34,
@@ -309,7 +332,8 @@
         "short_name": "SaigonBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "SBITVNVX"
+        "swift_code": "SBITVNVX",
+        "keywords": ["SaigonBank", "Sài Gòn Công Thương", "Sai Gon Cong Thuong", "SGICB", "Saigon Bank"]
     },
     "BacABank": {
         "id": 3,
@@ -322,7 +346,8 @@
         "short_name": "BacABank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "NASCVNVX"
+        "swift_code": "NASCVNVX",
+        "keywords": ["BacABank", "Bắc Á", "Bac A", "BAB", "Bac A Bank"]
     },
     "PVcomBank": {
         "id": 30,
@@ -335,7 +360,8 @@
         "short_name": "PVcomBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "WBVNVNVX"
+        "swift_code": "WBVNVNVX",
+        "keywords": ["PVcomBank", "Đại chúng", "Dai chung", "PVCB", "PVcom Bank"]
     },
     "MBV": {
         "id": 27,
@@ -348,7 +374,8 @@
         "short_name": "MBV",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "OCBKUS3M"
+        "swift_code": "OCBKUS3M",
+        "keywords": ["MBV", "Việt Nam Hiện Đại", "Viet Nam Hien Dai", "MBV Bank"]
     },
     "NCB": {
         "id": 24,
@@ -361,7 +388,8 @@
         "short_name": "NCB",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "NVBAVNVX"
+        "swift_code": "NVBAVNVX",
+        "keywords": ["NCB", "Quốc Dân", "Quoc Dan", "NCB Bank"]
     },
     "ShinhanBank": {
         "id": 37,
@@ -374,7 +402,8 @@
         "short_name": "ShinhanBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "SHBKVNVX"
+        "swift_code": "SHBKVNVX",
+        "keywords": ["ShinhanBank", "Shinhan", "Shinhan Bank"]
     },
     "ABBANK": {
         "id": 1,
@@ -387,7 +416,8 @@
         "short_name": "ABBANK",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "ABBKVNVX"
+        "swift_code": "ABBKVNVX",
+        "keywords": ["ABBANK", "An Bình", "An Binh", "ABB", "AB Bank"]
     },
     "VietABank": {
         "id": 41,
@@ -400,7 +430,8 @@
         "short_name": "VietABank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "VNACVNVX"
+        "swift_code": "VNACVNVX",
+        "keywords": ["VietABank", "Việt Á", "Viet A", "VAB", "Viet A Bank"]
     },
     "NamABank": {
         "id": 23,
@@ -413,7 +444,8 @@
         "short_name": "NamABank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "NAMAVNVX"
+        "swift_code": "NAMAVNVX",
+        "keywords": ["NamABank", "Nam Á", "Nam A", "NAB", "Nam A Bank"]
     },
     "PGBank": {
         "id": 29,
@@ -426,7 +458,8 @@
         "short_name": "PGBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "PGBLVNVX"
+        "swift_code": "PGBLVNVX",
+        "keywords": ["PGBank", "Thịnh vượng và Phát triển", "Thinh vuong va Phat trien", "PGB", "PG Bank"]
     },
     "VietBank": {
         "id": 46,
@@ -439,7 +472,8 @@
         "short_name": "VietBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "VNTTVNVX"
+        "swift_code": "VNTTVNVX",
+        "keywords": ["VietBank", "Việt Nam Thương Tín", "Viet Nam Thuong Tin", "VIETBANK", "Viet Bank"]
     },
     "BaoVietBank": {
         "id": 5,
@@ -452,7 +486,8 @@
         "short_name": "BaoVietBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "BVBVVNVX"
+        "swift_code": "BVBVVNVX",
+        "keywords": ["BaoVietBank", "Bảo Việt", "Bao Viet", "BVB", "Bao Viet Bank"]
     },
     "SeABank": {
         "id": 33,
@@ -465,7 +500,8 @@
         "short_name": "SeABank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "SEAVVNVX"
+        "swift_code": "SEAVVNVX",
+        "keywords": ["SeABank", "Đông Nam Á", "Dong Nam A", "SEAB", "Sea Bank"]
     },
     "COOPBANK": {
         "id": 52,
@@ -478,7 +514,8 @@
         "short_name": "COOPBANK",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["COOPBANK", "Hợp tác xã", "Hop tac xa", "COOPBANK"]
     },
     "LPBank": {
         "id": 20,
@@ -491,7 +528,8 @@
         "short_name": "LPBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "LVBKVNVX"
+        "swift_code": "LVBKVNVX",
+        "keywords": ["LPBank", "Lộc Phát", "Loc Phat", "LPB", "LP Bank"]
     },
     "KienLongBank": {
         "id": 19,
@@ -504,7 +542,8 @@
         "short_name": "KienLongBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "KLBKVNVX"
+        "swift_code": "KLBKVNVX",
+        "keywords": ["KienLongBank", "Kiên Long", "Kien Long", "KLB", "Kien Long Bank"]
     },
     "KBank": {
         "id": 55,
@@ -517,7 +556,8 @@
         "short_name": "KBank",
         "support": 3,
         "isTransfer": 1,
-        "swift_code": "KASIVNVX"
+        "swift_code": "KASIVNVX",
+        "keywords": ["KBank", "Kasikornbank", "Kasikorn", "KBank"]
     },
     "KookminHN": {
         "id": 50,
@@ -530,7 +570,8 @@
         "short_name": "KookminHN",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["KookminHN", "Kookmin Hà Nội", "Kookmin Ha Noi", "KBHN", "Kookmin"]
     },
     "KEBHanaHCM": {
         "id": 60,
@@ -543,7 +584,8 @@
         "short_name": "KEBHanaHCM",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["KEBHanaHCM", "KEB Hana HCM", "Hana HCM", "KEBHANAHCM"]
     },
     "KEBHANAHN": {
         "id": 61,
@@ -556,7 +598,8 @@
         "short_name": "KEBHANAHN",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["KEBHANAHN", "KEB Hana Hà Nội", "KEB Hana Ha Noi", "Hana Hà Nội", "Hana Ha Noi", "KEBHANAHN"]
     },
     "MAFC": {
         "id": 62,
@@ -569,7 +612,8 @@
         "short_name": "MAFC",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["MAFC", "Mirae Asset", "Mirae", "MAFC"]
     },
     "Citibank": {
         "id": 59,
@@ -582,7 +626,8 @@
         "short_name": "Citibank",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["Citibank", "Citi", "Citibank Hà Nội", "Citibank Ha Noi"]
     },
     "KookminHCM": {
         "id": 51,
@@ -595,7 +640,8 @@
         "short_name": "KookminHCM",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["KookminHCM", "Kookmin TP HCM", "Kookmin HCM", "KBHCM"]
     },
     "VBSP": {
         "id": 63,
@@ -608,7 +654,8 @@
         "short_name": "VBSP",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["VBSP", "Chính sách Xã hội", "Chinh sach Xa hoi", "VBSP"]
     },
     "Woori": {
         "id": 49,
@@ -621,7 +668,8 @@
         "short_name": "Woori",
         "support": 0,
         "isTransfer": 1,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["Woori", "Woori Bank", "WVN"]
     },
     "VRB": {
         "id": 48,
@@ -634,7 +682,8 @@
         "short_name": "VRB",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["VRB", "Việt Nga", "Viet Nga", "VRB Bank"]
     },
     "UnitedOverseas": {
         "id": 40,
@@ -647,7 +696,8 @@
         "short_name": "UnitedOverseas",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["UnitedOverseas", "UOB", "United Overseas", "UOB HCM"]
     },
     "StandardChartered": {
         "id": 32,
@@ -660,7 +710,8 @@
         "short_name": "StandardChartered",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": "SCBLVNVX"
+        "swift_code": "SCBLVNVX",
+        "keywords": ["StandardChartered", "Standard Chartered", "SCVN", "Standard Bank"]
     },
     "PublicBank": {
         "id": 28,
@@ -673,7 +724,8 @@
         "short_name": "PublicBank",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": "VIDPVNVX"
+        "swift_code": "VIDPVNVX",
+        "keywords": ["PublicBank", "Public", "PBVN", "Public Bank"]
     },
     "Nonghyup": {
         "id": 25,
@@ -686,7 +738,8 @@
         "short_name": "Nonghyup",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["Nonghyup", "Nonghyup Hà Nội", "Nonghyup Ha Noi", "NHB HN", "Nonghyup Bank"]
     },
     "IndovinaBank": {
         "id": 18,
@@ -699,7 +752,8 @@
         "short_name": "IndovinaBank",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["IndovinaBank", "Indovina", "IVB", "Indovina Bank"]
     },
     "IBKHCM": {
         "id": 16,
@@ -712,7 +766,8 @@
         "short_name": "IBKHCM",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["IBKHCM", "Công nghiệp Hàn Quốc HCM", "Cong nghiep Han Quoc HCM", "IBK HCM"]
     },
     "IBKHN": {
         "id": 15,
@@ -725,7 +780,8 @@
         "short_name": "IBKHN",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": null
+        "swift_code": null,
+        "keywords": ["IBKHN", "Công nghiệp Hàn Quốc Hà Nội", "Cong nghiep Han Quoc Ha Noi", "IBK Hà Nội", "IBK Ha Noi"]
     },
     "HSBC": {
         "id": 14,
@@ -738,7 +794,8 @@
         "short_name": "HSBC",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": "HSBCVNVX"
+        "swift_code": "HSBCVNVX",
+        "keywords": ["HSBC", "HSBC Việt Nam", "HSBC Viet Nam"]
     },
     "HongLeong": {
         "id": 13,
@@ -751,7 +808,8 @@
         "short_name": "HongLeong",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": "HLBBVNVX"
+        "swift_code": "HLBBVNVX",
+        "keywords": ["HongLeong", "Hong Leong", "HLBVN", "Hong Leong Bank"]
     },
     "GPBank": {
         "id": 11,
@@ -764,7 +822,8 @@
         "short_name": "GPBank",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": "GBNKVNVX"
+        "swift_code": "GBNKVNVX",
+        "keywords": ["GPBank", "Dầu Khí Toàn Cầu", "Dau Khi Toan Cau", "GPB", "GP Bank"]
     },
     "Vikki": {
         "id": 9,
@@ -777,7 +836,8 @@
         "short_name": "Vikki",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": "EACBVNVX"
+        "swift_code": "EACBVNVX",
+        "keywords": ["Vikki", "Ngân hàng số Vikki", "Ngan hang so Vikki"]
     },
     "DBSBank": {
         "id": 8,
@@ -790,7 +850,8 @@
         "short_name": "DBSBank",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": "DBSSVNVX"
+        "swift_code": "DBSSVNVX",
+        "keywords": ["DBSBank", "DBS", "DBS HCM"]
     },
     "CIMB": {
         "id": 7,
@@ -803,7 +864,8 @@
         "short_name": "CIMB",
         "support": 0,
         "isTransfer": 1,
-        "swift_code": "CIBBVNVN"
+        "swift_code": "CIBBVNVN",
+        "keywords": ["CIMB", "CIMB Việt Nam", "CIMB Viet Nam"]
     },
     "CBBank": {
         "id": 6,
@@ -816,6 +878,7 @@
         "short_name": "CBBank",
         "support": 0,
         "isTransfer": 0,
-        "swift_code": "GTBAVNVX"
+        "swift_code": "GTBAVNVX",
+        "keywords": ["CBBank", "Xây dựng", "Xay dung", "CBB", "CB Bank"]
     }
 }
