@@ -33,12 +33,12 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["scripts/content.js"]
+      "js": ["lib/fuse.min.js", "scripts/content.js", "scripts/bankMapper.js"]
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["bankList.json"],
+      "resources": ["bankList.json", "lib/fuse.min.js"],
       "matches": ["<all_urls>"]
     }
   ]

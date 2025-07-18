@@ -1,4 +1,29 @@
-{
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Bank Mapper</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #bankNameInput { padding: 8px; width: 300px; }
+    #suggestions { margin-top: 10px; border: 1px solid #ccc; max-height: 200px; overflow-y: auto; }
+    .suggestion-item { padding: 8px; cursor: pointer; }
+    .suggestion-item:hover { background-color: #f0f0f0; }
+    #resultOutput { margin-top: 20px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Test Hàm mapBankName</h1>
+  <input type="text" id="bankNameInput" placeholder="Nhập tên ngân hàng" autocomplete="off">
+  <div id="suggestions"></div>
+  <pre id="resultOutput"></pre>
+
+  <script src="https://unpkg.com/fuse.js@7.0.0/dist/fuse.min.js"></script>
+  <script>
+    // Dữ liệu bankList với trường keywords bổ sung
+    const bankList =
+    {
     "VietinBank": {
         "id": 17,
         "name": "Ngân hàng TMCP Công thương Việt Nam",
@@ -881,4 +906,119 @@
         "swift_code": "GTBAVNVX",
         "keywords": ["CBBank", "Xây dựng", "Xay dung", "CBB", "CB Bank"]
     }
-}
+};
+
+    // Chuyển bankList thành mảng để sử dụng với Fuse.js
+    const bankArray = Object.keys(bankList).map(key => ({
+      key,
+      ...bankList[key]
+    }));
+
+    // Cấu hình Fuse.js với trường keywords
+    const fuse = new Fuse(bankArray, {
+      keys: [
+        { name: 'keywords', weight: 0.5 }, // Ưu tiên keywords
+        { name: 'short_name', weight: 0.3 },
+        { name: 'code', weight: 0.2 },
+        { name: 'name', weight: 0.1 }
+      ],
+      threshold: 0.2, // Giảm ngưỡng để chấp nhận khớp gần đúng hơn
+      includeScore: true,
+      minMatchCharLength: 1 // Cho phép tìm kiếm với đầu vào ngắn
+    });
+
+    // Hàm chuẩn hóa chuỗi (loại bỏ dấu tiếng Việt, chuyển về lowercase)
+    function normalizeString(str) {
+      if (!str) return '';
+      return str
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    // Hàm tìm kiếm ngân hàng
+    function mapBankName(inputBankName) {
+      if (!inputBankName) return null;
+
+      const normalizedInput = normalizeString(inputBankName);
+
+      // Tìm kiếm chính xác với short_name, code, và keywords
+      for (const bank of bankArray) {
+        const normalizedShortName = normalizeString(bank.short_name);
+        const normalizedCode = normalizeString(bank.code);
+        const normalizedKeywords = bank.keywords.map(normalizeString);
+
+        if (
+          normalizedInput === normalizedShortName ||
+          normalizedInput === normalizedCode ||
+          normalizedKeywords.includes(normalizedInput)
+        ) {
+          return {
+            name: bank.name,
+            bin: bank.bin,
+            code: bank.code
+          };
+        }
+      }
+
+      // Tìm kiếm mờ với Fuse.js
+      const results = fuse.search(normalizedInput);
+      if (results.length > 0 && results[0].score < 0.3) {
+        const bank = results[0].item;
+        return {
+          name: bank.name,
+          bin: bank.bin,
+          code: bank.code
+        };
+      }
+
+      return null;
+    }
+
+    // Hàm hiển thị gợi ý
+    function showSuggestions(input) {
+      const suggestionsDiv = document.getElementById('suggestions');
+      suggestionsDiv.innerHTML = '';
+
+      if (!input) return;
+
+      const normalizedInput = normalizeString(input);
+      const results = fuse.search(normalizedInput).slice(0, 5); // Lấy tối đa 5 gợi ý
+
+      if (results.length === 0) return;
+
+      results.forEach(result => {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item';
+        div.textContent = `${result.item.short_name} (${result.item.code}) - ${result.item.name}`;
+        div.onclick = () => {
+          document.getElementById('bankNameInput').value = result.item.short_name;
+          suggestionsDiv.innerHTML = '';
+          displayResult(result.item.short_name);
+        };
+        suggestionsDiv.appendChild(div);
+      });
+    }
+
+    // Hàm hiển thị kết quả
+    function displayResult(input) {
+      const result = mapBankName(input);
+      const outputElement = document.getElementById('resultOutput');
+      if (result) {
+        outputElement.textContent = `Kết quả cho "${input}":\n${JSON.stringify(result, null, 2)}`;
+      } else {
+        outputElement.textContent = `Không tìm thấy ngân hàng phù hợp cho "${input}". Gợi ý: thử "MBBank", "Vietcombank", hoặc "TPBank".`;
+      }
+    }
+
+    // Sự kiện input thời gian thực
+    document.getElementById('bankNameInput').addEventListener('input', function() {
+      const input = this.value;
+      showSuggestions(input);
+      displayResult(input);
+    });
+  </script>
+</body>
+</html>
