@@ -1,53 +1,37 @@
-import { setupPageContainerObserver, setupObserver, waitForPageContainer } from './domObserver.js';
-import { extractBankTransferInfo } from './transferInfoExtractor.js';
-import { generateQRUrl } from './qrGenerator.js';
-import { showQRImage, removeQRContainer } from './qrDisplay.js';
-import { initializeSettings, setupMessageListener, getAutoShowQR } from './settingsManager.js';
+// Main module to coordinate the QR Generator extension
+async function initialize() {
+  console.log('QR Generator: Khởi tạo extension');
+  window.QRGenerator.initializeSettings();
+  window.QRGenerator.setupMessageListener(window.QRGenerator.removeQRContainer);
+  window.QRGenerator.waitForPageContainer(window.QRGenerator.setupObserver);
+}
 
 async function handleTransactionPopup(popupNode) {
   try {
-    if (!getAutoShowQR()) {
+    if (!window.QRGenerator.getAutoShowQR()) {
       return;
     }
     if (!popupNode) {
-      removeQRContainer();
+      window.QRGenerator.removeQRContainer();
       return;
     }
-    const transferInfo = await extractBankTransferInfo(popupNode);
+    const transferInfo = await window.QRGenerator.extractBankTransferInfo(popupNode);
     console.log('QR Generator: Kết quả trích xuất transferInfo:', transferInfo);
     if (!transferInfo || !transferInfo.accountNumber || !transferInfo.bankBin) {
-      console.error('QR Generator: Không thể trích xuất đủ thông tin giao dịch');
+      console.error('QR Generator: Không thể trích xuất thông tin chuyển khoản hợp lệ');
+      window.QRGenerator.removeQRContainer();
       return;
     }
-    console.log('QR Generator: Thông tin giao dịch:', transferInfo);
-    const qrUrl = generateQRUrl(transferInfo);
-    console.log('QR Generator: Đường link QR:', qrUrl);
-    
-    if (getAutoShowQR() && qrUrl) {
-      showQRImage(qrUrl);
-    }
+    const qrUrl = window.QRGenerator.generateQRUrl(transferInfo);
+    console.log('QR Generator: URL mã QR:', qrUrl);
+    window.QRGenerator.showQRImage(qrUrl);
   } catch (error) {
     console.error('QR Generator: Lỗi khi xử lý popup giao dịch:', error);
+    window.QRGenerator.removeQRContainer();
   }
 }
 
-function initialize() {
-  initializeSettings();
-  setupMessageListener(removeQRContainer);
-  setupPageContainerObserver((pageContainer) => {
-    setupObserver(pageContainer, handleTransactionPopup);
-  });
-  window.addEventListener('load', () => {
-    waitForPageContainer((pageContainer) => {
-      setupObserver(pageContainer, handleTransactionPopup);
-    });
-    const existingPopups = document.querySelectorAll('div[role="presentation"].bn-mask.bn-modal');
-    existingPopups.forEach(popup => {
-      handleTransactionPopup(popup);
-    });
-  });
-}
-
-initialize();
-
-export { handleTransactionPopup }; 
+// Gắn vào đối tượng toàn cục QRGenerator
+window.QRGenerator = window.QRGenerator || {};
+window.QRGenerator.initialize = initialize;
+window.QRGenerator.handleTransactionPopup = handleTransactionPopup; 

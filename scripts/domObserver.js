@@ -26,54 +26,31 @@ function setupPageContainerObserver(callback) {
   observer.observe(document.body, config);
 }
 
-function setupObserver(pageContainer, handlePopupCallback) {
-  let observer;
-
-  function checkForPresentationDiv() {
-    const presentationDiv = pageContainer.querySelector('div[role="presentation"].bn-mask.bn-modal');
-    if (presentationDiv && !isProcessing) {
-      const orderNumberElement = presentationDiv.querySelector('div[data-bn-type="text"].css-14yjdiq');
-      if (!orderNumberElement) {
-        return false;
-      }
-      isProcessing = true;
-      observer.disconnect();
-      handlePopupCallback(presentationDiv).finally(() => {
-        isProcessing = false;
-        observer.observe(pageContainer, config);
-      });
-      return true;
-    } else if (!presentationDiv && isProcessing) {
-      handlePopupCallback(null);
-      isProcessing = false;
-      observer.observe(pageContainer, config);
-      return false;
-    }
-    return false;
-  }
-
-  observer = new MutationObserver((mutations) => {
-    let shouldCheck = false;
+function setupObserver(container, callback) {
+  if (!container) return;
+  const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-      if (mutation.addedNodes.length || mutation.removedNodes.length) {
-        shouldCheck = true;
-      }
-      if (mutation.type === 'attributes' && mutation.attributeName === 'role') {
-        shouldCheck = true;
+      if (mutation.addedNodes.length) {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE && node.classList && node.classList.contains('bn-mask') && node.classList.contains('bn-modal')) {
+            if (!isProcessing) {
+              isProcessing = true;
+              callback(node);
+              setTimeout(() => {
+                isProcessing = false;
+              }, 1000);
+            }
+          }
+        });
       }
     });
-    if (shouldCheck) {
-      checkForPresentationDiv();
-    }
   });
-  const config = {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ['role']
-  };
-  observer.observe(pageContainer, config);
-  checkForPresentationDiv();
+  const config = { childList: true, subtree: true };
+  observer.observe(container, config);
 }
 
-export { setupPageContainerObserver, setupObserver, waitForPageContainer, isProcessing }; 
+// Gắn vào đối tượng toàn cục QRGenerator
+window.QRGenerator = window.QRGenerator || {};
+window.QRGenerator.waitForPageContainer = waitForPageContainer;
+window.QRGenerator.setupPageContainerObserver = setupPageContainerObserver;
+window.QRGenerator.setupObserver = setupObserver; 

@@ -24,4 +24,6 @@ function generateQRUrl(transferInfo) {
   return url;
 }
 
-export { generateQRUrl }; 
+// Gắn vào đối tượng toàn cục QRGenerator
+window.QRGenerator = window.QRGenerator || {};
+window.QRGenerator.generateQRUrl = generateQRUrl; 

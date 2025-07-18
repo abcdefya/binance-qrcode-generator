@@ -24,8 +24,12 @@ function setupMessageListener(removeQRCallback) {
         showTransferInfo = message.settings.showTransferInfo;
       }
       sendResponse({ success: true });
+    } else if (message.type === 'GET_SETTINGS') {
+      sendResponse({
+        autoShowQR: autoShowQR,
+        showTransferInfo: showTransferInfo
+      });
     }
-    return true;
   });
 }
 
@@ -33,8 +37,8 @@ function getAutoShowQR() {
   return autoShowQR;
 }
 
-function getShowTransferInfo() {
-  return showTransferInfo;
-}
-
-export { initializeSettings, setupMessageListener, getAutoShowQR, getShowTransferInfo }; 
+// Gắn vào đối tượng toàn cục QRGenerator
+window.QRGenerator = window.QRGenerator || {};
+window.QRGenerator.initializeSettings = initializeSettings;
+window.QRGenerator.setupMessageListener = setupMessageListener;
+window.QRGenerator.getAutoShowQR = getAutoShowQR; 

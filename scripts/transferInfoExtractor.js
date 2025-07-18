@@ -1,5 +1,3 @@
-import { mapBankName, getBankList } from './bankMapper.js';
-
 async function extractBankTransferInfo(document) {
   const transferInfo = {
     paymentMethod: null,
@@ -24,62 +22,38 @@ async function extractBankTransferInfo(document) {
     if (paymentMethodElement) {
       transferInfo.paymentMethod = paymentMethodElement.textContent.trim();
     }
-    const amountElement = document.querySelector('.sc-jJMGnK');
+    const amountElement = document.querySelector('div[data-bn-type="text"].css-1a1squ3');
     if (amountElement) {
-      const amountText = amountElement.textContent.trim();
-      const amountMatch = amountText.match(/[\d,]+\.\d+|\d+/);
-      if (amountMatch) {
-        transferInfo.amount = amountMatch[0].replace(/,/g, '');
-      }
+      const amountText = amountElement.textContent.trim().replace(/[^0-9.]/g, '');
+      transferInfo.amount = parseFloat(amountText);
     }
-    const orderTypeElement = document.querySelector('.css-vurnku');
-    if (orderTypeElement) {
-      const orderTypeText = orderTypeElement.textContent;
-      transferInfo.orderType = orderTypeText.includes('Mua') ? 'buy' : (orderTypeText.includes('Bán') ? 'sell' : null);
+    const accountNameElement = document.querySelector('div[data-bn-type="text"].css-1e7s0x');
+    if (accountNameElement) {
+      transferInfo.accountName = accountNameElement.textContent.trim();
     }
-    const isVietnamBankTransfer = transferInfo.paymentMethod && transferInfo.paymentMethod.includes('(Việt Nam)');
-    const labelMap = isVietnamBankTransfer ? {
-      'Họ và tên': 'accountName',
-      'Tên ngân hàng': 'bankName',
-      'Số tài khoản/Số thẻ': 'accountNumber',
-      'Chi nhánh mở tài khoản': 'bankBranch',
-      'Nội dung chuyển khoản': 'referenceMessage'
-    } : {
-      'Name': 'accountName',
-      'Bank Card/Account Number': 'accountNumber',
-      'Tên ngân hàng': 'bankName',
-      'Chi nhánh mở tài khoản': 'bankBranch',
-      'Nội dung chuyển khoản': 'referenceMessage'
-    };
-    const infoRows = document.querySelectorAll('.flex.justify-between');
-    infoRows.forEach(row => {
-      const labelElement = row.querySelector('.text-tertiaryText div');
-      const valueElement = row.querySelector('.flex.flex-grow.justify-end .break-words div');
-      const labelText = labelElement?.textContent?.trim();
-      const valueText = valueElement?.textContent?.trim();
-      if (labelText && valueText && labelMap[labelText]) {
-        const field = labelMap[labelText];
-        if (field === 'accountNumber') {
-          transferInfo[field] = valueText.replace(/[^0-9]/g, '');
-        } else {
-          transferInfo[field] = valueText;
-        }
-      }
-    });
+    const accountNumberElement = document.querySelector('div[data-bn-type="text"].css-1e7s0x + div[data-bn-type="text"]');
+    if (accountNumberElement) {
+      transferInfo.accountNumber = accountNumberElement.textContent.trim().replace(/\n/g, '').replace(/\t/g, '').replace(/ /g, '');
+    }
+    const bankNameElement = document.querySelector('div[data-bn-type="text"].css-1e7s0x + div[data-bn-type="text"] + div[data-bn-type="text"]');
+    if (bankNameElement) {
+      transferInfo.bankName = bankNameElement.textContent.trim();
+    }
     if (transferInfo.bankName) {
-      const bankList = await getBankList();
-      const bankInfo = mapBankName(transferInfo.bankName, bankList);
-      if (bankInfo) {
-        transferInfo.bankName = bankInfo.name;
-        transferInfo.bankBin = bankInfo.bin;
-        transferInfo.bankCode = bankInfo.code;
+      const bankList = await window.QRGenerator.getBankList();
+      const mappedBank = window.QRGenerator.mapBankName(transferInfo.bankName, bankList);
+      if (mappedBank) {
+        transferInfo.bankBin = mappedBank.bin;
+        transferInfo.bankCode = mappedBank.code;
+        transferInfo.bankName = mappedBank.name;
       }
     }
-    return transferInfo;
   } catch (error) {
-    console.error('QR Generator: Lỗi khi trích xuất thông tin:', error);
-    return null;
+    console.error('QR Generator: Lỗi khi trích xuất thông tin chuyển khoản:', error);
   }
+  return transferInfo;
 }
 
-export { extractBankTransferInfo }; 
+// Gắn vào đối tượng toàn cục QRGenerator
+window.QRGenerator = window.QRGenerator || {};
+window.QRGenerator.extractBankTransferInfo = extractBankTransferInfo; 
