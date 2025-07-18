@@ -3,17 +3,19 @@ let autoShowQR = true;
 let showTransferInfo = true;
 
 function initializeSettings() {
+  console.log('QR Generator: Khởi tạo cài đặt');
   chrome.storage.sync.get({
     autoShowQR: true,
     showTransferInfo: true
   }, (settings) => {
     autoShowQR = settings.autoShowQR;
     showTransferInfo = settings.showTransferInfo;
-    console.log('QR Generator: Khởi tạo cài đặt - autoShowQR:', autoShowQR, 'showTransferInfo:', showTransferInfo);
+    console.log('QR Generator: Cài đặt - autoShowQR:', autoShowQR, 'showTransferInfo:', showTransferInfo);
   });
 }
 
 function setupMessageListener(removeQRCallback) {
+  console.log('QR Generator: Thiết lập message listener');
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log('QR Generator: Nhận tin nhắn:', message);
     if (message.type === 'SETTINGS_CHANGED') {

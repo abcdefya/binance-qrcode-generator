@@ -1,3 +1,4 @@
+// qrDisplay.js
 let qrContainer = null;
 let isDragging = false;
 let isResizing = false;
@@ -25,33 +26,28 @@ function showQRImage(qrUrl) {
 
   const qrImage = document.createElement('img');
   qrImage.src = qrUrl;
-  qrImage.alt = 'QR Code';
-  qrImage.style.maxWidth = '200px';
-  qrImage.style.maxHeight = '200px';
+  qrImage.style.width = '600px';
+  qrImage.style.height = '700px';
   qrImage.style.display = 'block';
-  qrImage.style.marginBottom = '10px';
+  qrImage.style.userSelect = 'none';
+  qrImage.draggable = false;
   qrImage.onerror = () => {
-    console.error('QR Generator: Lỗi khi tải hình ảnh QR');
-    qrImage.alt = 'Lỗi tải QR';
+    console.error('QR Generator: Lỗi khi tải ảnh QR từ:', qrUrl);
+    qrContainer.remove();
+    qrContainer = null;
   };
 
-  const title = document.createElement('div');
-  title.textContent = 'QR Chuyển Khoản';
-  title.style.fontWeight = 'bold';
-  title.style.marginBottom = '5px';
-  title.style.cursor = 'move';
-
   const closeButton = document.createElement('button');
-  closeButton.textContent = 'Đóng';
+  closeButton.textContent = 'X';
   closeButton.style.position = 'absolute';
   closeButton.style.top = '5px';
   closeButton.style.right = '5px';
-  closeButton.style.padding = '2px 5px';
-  closeButton.style.background = '#ff6347';
+  closeButton.style.background = '#ff4d4f';
   closeButton.style.color = 'white';
   closeButton.style.border = 'none';
   closeButton.style.borderRadius = '3px';
   closeButton.style.cursor = 'pointer';
+  closeButton.style.padding = '2px 6px';
   closeButton.onclick = removeQRContainer;
 
   const resizeHandle = document.createElement('div');
@@ -63,83 +59,77 @@ function showQRImage(qrUrl) {
   resizeHandle.style.background = '#ccc';
   resizeHandle.style.cursor = 'se-resize';
 
-  qrContainer.appendChild(title);
-  qrContainer.appendChild(qrImage);
+  qrContainer.addEventListener('mousedown', (e) => {
+    if (e.target === closeButton || e.target === resizeHandle) return;
+    isDragging = true;
+    dragStart.x = e.clientX;
+    dragStart.y = e.clientY;
+    dragStart.left = qrContainer.offsetLeft;
+    dragStart.top = qrContainer.offsetTop;
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      const deltaX = e.clientX - dragStart.x;
+      const deltaY = e.clientY - dragStart.y;
+      let newLeft = dragStart.left + deltaX;
+      let newTop = dragStart.top + deltaY;
+      newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - qrContainer.offsetWidth));
+      newTop = Math.max(0, Math.min(newTop, window.innerHeight - qrContainer.offsetHeight));
+      qrContainer.style.left = `${newLeft}px`;
+      qrContainer.style.top = `${newTop}px`;
+      qrContainer.style.right = 'auto';
+      qrContainer.style.bottom = 'auto';
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  resizeHandle.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    resizeStart.x = e.clientX;
+    resizeStart.y = e.clientY;
+    resizeStart.width = qrContainer.offsetWidth;
+    resizeStart.height = qrContainer.offsetHeight;
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isResizing) {
+      const deltaX = e.clientX - resizeStart.x;
+      const deltaY = e.clientY - resizeStart.y;
+      let newWidth = resizeStart.width + deltaX;
+      let newHeight = resizeStart.height + deltaY;
+      newWidth = Math.max(100, newWidth);
+      newHeight = Math.max(100, newHeight);
+      qrContainer.style.width = `${newWidth}px`;
+      qrContainer.style.height = `${newHeight}px`;
+      qrImage.style.width = `${newWidth - 20}px`;
+      qrImage.style.height = `${newHeight - 20}px`;
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    isResizing = false;
+  });
+
   qrContainer.appendChild(closeButton);
+  qrContainer.appendChild(qrImage);
   qrContainer.appendChild(resizeHandle);
   document.body.appendChild(qrContainer);
-
-  qrContainer.addEventListener('mousedown', startDragging);
-  resizeHandle.addEventListener('mousedown', startResizing);
-  document.addEventListener('mousemove', drag);
-  document.addEventListener('mousemove', resize);
-  document.addEventListener('mouseup', stopDragging);
-  document.addEventListener('mouseup', stopResizing);
 }
 
 function removeQRContainer() {
   if (qrContainer) {
     qrContainer.remove();
     qrContainer = null;
-    document.removeEventListener('mousemove', drag);
-    document.removeEventListener('mousemove', resize);
-    document.removeEventListener('mouseup', stopDragging);
-    document.removeEventListener('mouseup', stopResizing);
   }
-}
-
-function startDragging(e) {
-  if (e.target.tagName !== 'BUTTON') {
-    isDragging = true;
-    dragStart.x = e.clientX;
-    dragStart.y = e.clientY;
-    dragStart.left = qrContainer.offsetLeft;
-    dragStart.top = qrContainer.offsetTop;
-  }
-}
-
-function drag(e) {
-  if (isDragging) {
-    const dx = e.clientX - dragStart.x;
-    const dy = e.clientY - dragStart.y;
-    qrContainer.style.left = `${dragStart.left + dx}px`;
-    qrContainer.style.top = `${dragStart.top + dy}px`;
-    qrContainer.style.right = 'auto';
-    qrContainer.style.bottom = 'auto';
-  }
-}
-
-function stopDragging() {
-  isDragging = false;
-}
-
-function startResizing(e) {
-  e.preventDefault();
-  isResizing = true;
-  resizeStart.x = e.clientX;
-  resizeStart.y = e.clientY;
-  resizeStart.width = qrContainer.offsetWidth;
-  resizeStart.height = qrContainer.offsetHeight;
-}
-
-function resize(e) {
-  if (isResizing) {
-    const dx = e.clientX - resizeStart.x;
-    const dy = e.clientY - resizeStart.y;
-    const newWidth = Math.max(100, resizeStart.width + dx);
-    const newHeight = Math.max(100, resizeStart.height + dy);
-    qrContainer.style.width = `${newWidth}px`;
-    qrContainer.style.height = `${newHeight}px`;
-    qrContainer.querySelector('img').style.maxWidth = `${newWidth - 20}px`;
-    qrContainer.querySelector('img').style.maxHeight = `${newHeight - 40}px`;
-  }
-}
-
-function stopResizing() {
-  isResizing = false;
 }
 
 // Gắn vào đối tượng toàn cục QRGenerator
 window.QRGenerator = window.QRGenerator || {};
 window.QRGenerator.showQRImage = showQRImage;
-window.QRGenerator.removeQRContainer = removeQRContainer; 
+window.QRGenerator.removeQRContainer = removeQRContainer;

@@ -1,3 +1,4 @@
+// qrGenerator.js
 function generateQRUrl(transferInfo) {
   if (!transferInfo || !transferInfo.accountNumber) {
     throw new Error('Thông tin chuyển khoản không hợp lệ');
@@ -26,4 +27,4 @@ function generateQRUrl(transferInfo) {
 
 // Gắn vào đối tượng toàn cục QRGenerator
 window.QRGenerator = window.QRGenerator || {};
-window.QRGenerator.generateQRUrl = generateQRUrl; 
+window.QRGenerator.generateQRUrl = generateQRUrl;

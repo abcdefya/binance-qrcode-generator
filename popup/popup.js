@@ -1,5 +1,4 @@
 // popup.js
-// Hàm chuẩn hóa chuỗi (copied từ bankMapper.js để sử dụng trong popup)
 function normalizeString(str) {
   if (!str) return '';
   return str
@@ -10,7 +9,6 @@ function normalizeString(str) {
     .trim();
 }
 
-// Hàm ánh xạ ngân hàng (copied từ bankMapper.js để sử dụng trong popup)
 async function mapBankName(inputBankName) {
   try {
     const bankList = await fetch(chrome.runtime.getURL('bankList.json')).then(res => res.json());
@@ -20,7 +18,6 @@ async function mapBankName(inputBankName) {
       ...bankList[key]
     }));
 
-    // Tìm kiếm chính xác trước
     for (const bank of bankArray) {
       const normalizedShortName = normalizeString(bank.short_name);
       const normalizedCode = normalizeString(bank.code);
@@ -39,7 +36,6 @@ async function mapBankName(inputBankName) {
       }
     }
 
-    // Tìm kiếm mờ với Fuse.js
     const fuse = new Fuse(bankArray, {
       keys: [
         { name: 'keywords', weight: 0.5 },
@@ -69,19 +65,12 @@ async function mapBankName(inputBankName) {
   }
 }
 
-// Lắng nghe sự kiện khi popup được mở
 document.addEventListener('DOMContentLoaded', async () => {
-  // Kiểm tra xem extension có đang hoạt động trên tab hiện tại không
   checkActiveTab();
-  
-  // Khởi tạo các cài đặt từ local storage
   initSettings();
-  
-  // Lắng nghe sự kiện thay đổi cài đặt và kiểm tra ngân hàng
   setupEventListeners();
 });
 
-// Kiểm tra xem tab hiện tại có phải là Binance không
 async function checkActiveTab() {
   try {
     const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -104,7 +93,6 @@ async function checkActiveTab() {
   }
 }
 
-// Khởi tạo các cài đặt từ local storage
 async function initSettings() {
   try {
     const settings = await chrome.storage.sync.get({
@@ -120,15 +108,12 @@ async function initSettings() {
   }
 }
 
-// Thiết lập các sự kiện lắng nghe
 function setupEventListeners() {
-  // Lắng nghe sự kiện thay đổi cài đặt tự động hiển thị QR
   document.getElementById('autoShowQR').addEventListener('change', async (event) => {
     try {
       await chrome.storage.sync.set({ autoShowQR: event.target.checked });
       console.log('QR Generator: Cập nhật autoShowQR:', event.target.checked);
       
-      // Gửi thông báo đến content script
       const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (activeTab.id) {
         chrome.tabs.sendMessage(activeTab.id, {
@@ -141,13 +126,11 @@ function setupEventListeners() {
     }
   });
   
-  // Lắng nghe sự kiện thay đổi cài đặt hiển thị thông tin chuyển khoản
   document.getElementById('showTransferInfo').addEventListener('change', async (event) => {
     try {
       await chrome.storage.sync.set({ showTransferInfo: event.target.checked });
       console.log('QR Generator: Cập nhật showTransferInfo:', event.target.checked);
       
-      // Gửi thông báo đến content script
       const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (activeTab.id) {
         chrome.tabs.sendMessage(activeTab.id, {
@@ -160,7 +143,6 @@ function setupEventListeners() {
     }
   });
   
-  // Lắng nghe sự kiện kiểm tra ánh xạ ngân hàng
   document.getElementById('testBank').addEventListener('click', async () => {
     const bankName = document.getElementById('bankNameInput').value;
     const resultOutput = document.getElementById('resultOutput');

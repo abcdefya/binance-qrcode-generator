@@ -1,14 +1,4 @@
 // main.js
-async function initialize() {
-  console.log('QR Generator: Khởi tạo extension');
-  window.QRGenerator.initializeSettings();
-  window.QRGenerator.setupMessageListener(window.QRGenerator.removeQRContainer);
-  window.QRGenerator.waitForPageContainer((container) => {
-    console.log('QR Generator: Tìm thấy pageContainer', container);
-    window.QRGenerator.setupObserver(container, window.QRGenerator.handleTransactionPopup);
-  });
-}
-
 async function handleTransactionPopup(popupNode) {
   console.log('QR Generator: Xử lý popup giao dịch', popupNode);
   try {
@@ -39,5 +29,4 @@ async function handleTransactionPopup(popupNode) {
 
 // Gắn vào đối tượng toàn cục QRGenerator
 window.QRGenerator = window.QRGenerator || {};
-window.QRGenerator.initialize = initialize;
 window.QRGenerator.handleTransactionPopup = handleTransactionPopup;
