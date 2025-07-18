@@ -113,6 +113,44 @@
       transform: translateX(20px);
     }
     
+    .debug-container {
+      margin-top: 16px;
+      padding: 12px;
+      border: 1px solid #eaeaea;
+      border-radius: 4px;
+    }
+    
+    .debug-container input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    
+    .debug-container button {
+      width: 100%;
+      padding: 8px;
+      background-color: #1677FF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .debug-container button:hover {
+      background-color: #0052D4;
+    }
+    
+    .debug-container pre {
+      font-size: 12px;
+      background-color: #f5f5f5;
+      padding: 8px;
+      border-radius: 4px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    
     .footer {
       margin-top: 16px;
       font-size: 12px;
@@ -127,15 +165,15 @@
     <h1>Binance QR Generator</h1>
   </div>
   
-  <div id="status" class="status active">
-    <p class="status-text active">Extension đang hoạt động trên Binance</p>
+  <div id="status" class="status">
+    <p class="status-text">Đang kiểm tra trạng thái...</p>
   </div>
   
   <div class="settings">
     <div class="toggle-container">
       <span class="toggle-label">Tự động hiển thị mã QR</span>
       <label class="toggle">
-        <input type="checkbox" id="autoShowQR" checked>
+        <input type="checkbox" id="autoShowQR">
         <span class="slider"></span>
       </label>
     </div>
@@ -143,10 +181,16 @@
     <div class="toggle-container">
       <span class="toggle-label">Hiển thị thông tin chuyển khoản</span>
       <label class="toggle">
-        <input type="checkbox" id="showTransferInfo" checked>
+        <input type="checkbox" id="showTransferInfo">
         <span class="slider"></span>
       </label>
     </div>
+  </div>
+  
+  <div class="debug-container">
+    <input type="text" id="bankNameInput" placeholder="Nhập tên ngân hàng (VD: Quân đội, Vietcom)">
+    <button id="testBank">Kiểm tra ánh xạ ngân hàng</button>
+    <pre id="resultOutput"></pre>
   </div>
   
   <div class="footer">

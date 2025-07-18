@@ -14,7 +14,7 @@
     "storage"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "https://www.binance.com/*"
   ],
   "action": {
     "default_popup": "popup/popup.html",
@@ -31,6 +31,7 @@
     {
       "matches": ["https://www.binance.com/*"],
       "js": [
+        "scripts/lib/fuse.min.js",
         "scripts/bankMapper.js",
         "scripts/domObserver.js",
         "scripts/transferInfoExtractor.js",
@@ -45,7 +46,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["bankList.json"],
+      "resources": ["bankList.json", "scripts/lib/fuse.min.js"],
       "matches": ["https://www.binance.com/*"]
     }
   ]
