@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "hnswlib-node": "^3.0.0"
+  }
+}

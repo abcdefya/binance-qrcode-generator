@@ -1,29 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Bank Mapper</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    #bankNameInput { padding: 8px; width: 300px; }
-    #suggestions { margin-top: 10px; border: 1px solid #ccc; max-height: 200px; overflow-y: auto; }
-    .suggestion-item { padding: 8px; cursor: pointer; }
-    .suggestion-item:hover { background-color: #f0f0f0; }
-    #resultOutput { margin-top: 20px; white-space: pre-wrap; }
-  </style>
+  <title>Tìm kiếm ngân hàng</title>
+  <script src="https://cdn.jsdelivr.net/npm/fuzzball@2.0.0/dist/fuzzball.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h1>Test Hàm mapBankName</h1>
-  <input type="text" id="bankNameInput" placeholder="Nhập tên ngân hàng" autocomplete="off">
-  <div id="suggestions"></div>
-  <pre id="resultOutput"></pre>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-4 text-center">Tìm kiếm ngân hàng</h1>
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Nhập tên ngân hàng (VD: VietinBank, VCB, Công thương)"
+      class="w-full p-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <div id="result" class="text-sm"></div>
+  </div>
 
-  <script src="https://unpkg.com/fuse.js@7.0.0/dist/fuse.min.js"></script>
   <script>
-    // Dữ liệu bankList với trường keywords bổ sung
-    const bankList =
-    {
+    // Danh sách ngân hàng
+    const bankList = {
     "VietinBank": {
         "id": 17,
         "name": "Ngân hàng TMCP Công thương Việt Nam",
@@ -908,116 +906,115 @@
     }
 };
 
-    // Chuyển bankList thành mảng để sử dụng với Fuse.js
-    const bankArray = Object.keys(bankList).map(key => ({
-      key,
-      ...bankList[key]
-    }));
-
-    // Cấu hình Fuse.js với trường keywords
-    const fuse = new Fuse(bankArray, {
-      keys: [
-        { name: 'keywords', weight: 0.5 }, // Ưu tiên keywords
-        { name: 'short_name', weight: 0.3 },
-        { name: 'code', weight: 0.2 },
-        { name: 'name', weight: 0.1 }
-      ],
-      threshold: 0.2, // Giảm ngưỡng để chấp nhận khớp gần đúng hơn
-      includeScore: true,
-      minMatchCharLength: 1 // Cho phép tìm kiếm với đầu vào ngắn
-    });
-
-    // Hàm chuẩn hóa chuỗi (loại bỏ dấu tiếng Việt, chuyển về lowercase)
-    function normalizeString(str) {
-      if (!str) return '';
+    // Hàm chuẩn hóa tiếng Việt (chuyển có dấu thành không dấu)
+    function removeDiacritics(str) {
       return str
-        .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D')
+        .toLowerCase();
+    }
+
+    // Tiền xử lý dữ liệu ngân hàng
+    const bankData = Object.entries(bankList).map(([key, value]) => {
+      const searchableText = removeDiacritics(
+        [value.name, value.short_name, value.code, ...value.keywords].join(' ')
+      );
+      return {
+        key,
+        name: value.name,
+        short_name: value.short_name,
+        bin: value.bin,
+        code: value.code,
+        searchableText
+      };
+    });
+
+    // Hàm tách và lọc từ khóa từ chuỗi đầu vào
+    function preprocessQuery(query) {
+      // Loại bỏ ký tự đặc biệt và tách thành từ
+      const cleanedQuery = query.replace(/[\(\)\[\]\,]/g, ' ').trim();
+      const tokens = cleanedQuery.split(/\s+/).map(removeDiacritics).filter(token => 
+        token && !['nh', 'tmcp', 'ngan', 'hang', 'thuong', 'mai', 'co', 'phan'].includes(token)
+      );
+      return tokens;
     }
 
     // Hàm tìm kiếm ngân hàng
-    function mapBankName(inputBankName) {
-      if (!inputBankName) return null;
+    function searchBank(query) {
+      if (!query) return null;
+      const tokens = preprocessQuery(query);
+      if (tokens.length === 0) return null;
 
-      const normalizedInput = normalizeString(inputBankName);
-
-      // Tìm kiếm chính xác với short_name, code, và keywords
-      for (const bank of bankArray) {
-        const normalizedShortName = normalizeString(bank.short_name);
-        const normalizedCode = normalizeString(bank.code);
-        const normalizedKeywords = bank.keywords.map(normalizeString);
-
-        if (
-          normalizedInput === normalizedShortName ||
-          normalizedInput === normalizedCode ||
-          normalizedKeywords.includes(normalizedInput)
-        ) {
-          return {
-            name: bank.name,
-            bin: bank.bin,
-            code: bank.code
-          };
+      // Tìm kiếm chính xác
+      for (const bank of bankData) {
+        const normalizedBankFields = [
+          bank.short_name.toLowerCase(),
+          bank.code.toLowerCase(),
+          ...bank.searchableText.split(' ')
+        ];
+        for (const token of tokens) {
+          if (normalizedBankFields.some(field => field === token)) {
+            return {
+              name: bank.name,
+              short_name: bank.short_name,
+              bin: bank.bin,
+              code: bank.code
+            };
+          }
         }
       }
 
-      // Tìm kiếm mờ với Fuse.js
-      const results = fuse.search(normalizedInput);
-      if (results.length > 0 && results[0].score < 0.3) {
-        const bank = results[0].item;
+      // Tìm kiếm mờ với fuzzball.js
+      const options = { scorer: fuzzball.partial_ratio, returnObjects: true };
+      let bestMatch = null;
+      let highestScore = 0;
+
+      for (const token of tokens) {
+        const results = fuzzball.extract(token, bankData, { key: 'searchableText', ...options });
+        if (results.length > 0 && results[0].score > 85) {
+          if (results[0].score > highestScore) {
+            highestScore = results[0].score;
+            bestMatch = results[0].obj;
+          }
+        }
+      }
+
+      if (bestMatch) {
         return {
-          name: bank.name,
-          bin: bank.bin,
-          code: bank.code
+          name: bestMatch.name,
+          short_name: bestMatch.short_name,
+          bin: bestMatch.bin,
+          code: bestMatch.code
         };
       }
 
       return null;
     }
 
-    // Hàm hiển thị gợi ý
-    function showSuggestions(input) {
-      const suggestionsDiv = document.getElementById('suggestions');
-      suggestionsDiv.innerHTML = '';
+    // Xử lý sự kiện input
+    const searchInput = document.getElementById('searchInput');
+    const resultDiv = document.getElementById('result');
 
-      if (!input) return;
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value;
+      const result = searchBank(query);
 
-      const normalizedInput = normalizeString(input);
-      const results = fuse.search(normalizedInput).slice(0, 5); // Lấy tối đa 5 gợi ý
-
-      if (results.length === 0) return;
-
-      results.forEach(result => {
-        const div = document.createElement('div');
-        div.className = 'suggestion-item';
-        div.textContent = `${result.item.short_name} (${result.item.code}) - ${result.item.name}`;
-        div.onclick = () => {
-          document.getElementById('bankNameInput').value = result.item.short_name;
-          suggestionsDiv.innerHTML = '';
-          displayResult(result.item.short_name);
-        };
-        suggestionsDiv.appendChild(div);
-      });
-    }
-
-    // Hàm hiển thị kết quả
-    function displayResult(input) {
-      const result = mapBankName(input);
-      const outputElement = document.getElementById('resultOutput');
       if (result) {
-        outputElement.textContent = `Kết quả cho "${input}":\n${JSON.stringify(result, null, 2)}`;
+        resultDiv.innerHTML = `
+          <div class="p-4 bg-gray-50 rounded">
+            <p><strong>Tên ngân hàng:</strong> ${result.name}</p>
+            <p><strong>Tên viết tắt:</strong> ${result.short_name}</p>
+            <p><strong>Bin:</strong> ${result.bin}</p>
+            <p><strong>Code:</strong> ${result.code}</p>
+          </div>
+        `;
       } else {
-        outputElement.textContent = `Không tìm thấy ngân hàng phù hợp cho "${input}". Gợi ý: thử "MBBank", "Vietcombank", hoặc "TPBank".`;
+        resultDiv.innerHTML = `
+          <p class="text-red-500">Không tìm thấy ngân hàng. Vui lòng thử lại với từ khóa khác (VD: VietinBank, VCB, Tiên Phong).</p>
+        `;
       }
-    }
-
-    // Sự kiện input thời gian thực
-    document.getElementById('bankNameInput').addEventListener('input', function() {
-      const input = this.value;
-      showSuggestions(input);
-      displayResult(input);
     });
   </script>
 </body>
