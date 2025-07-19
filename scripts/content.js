@@ -334,42 +334,95 @@ async function getBankList() {
   }
 }
 
+// Hàm chuẩn hóa tiếng Việt (chuyển có dấu thành không dấu)
+function removeDiacritics(str) {
+  if (!str) return '';
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase();
+}
+
+// Hàm tách và lọc từ khóa từ chuỗi đầu vào
+function preprocessQuery(query) {
+  if (!query) return [];
+  // Loại bỏ ký tự đặc biệt và tách thành từ
+  const cleanedQuery = query.replace(/[\(\)\[\]\,]/g, ' ').trim();
+  const tokens = cleanedQuery.split(/\s+/).map(removeDiacritics).filter(token => 
+    token && !['nh', 'tmcp', 'ngan', 'hang', 'thuong', 'mai', 'co', 'phan'].includes(token)
+  );
+  return tokens;
+}
+
+// Hàm tìm kiếm ngân hàng cải tiến
 function mapBankName(inputBankName, bankList) {
   if (!inputBankName || !bankList) return null;
-  const normalizedInput = inputBankName.toLowerCase().trim();
-  let result = null;
-  for (const bankKey in bankList) {
-    const bank = bankList[bankKey];
-    if (
-      normalizedInput === (bank.short_name || '').toLowerCase().trim() ||
-      normalizedInput === (bank.code || '').toLowerCase().trim()
-    ) {
-      result = {
-        name: bank.name,
-        bin: bank.bin,
-        code: bank.code
-      };
-      return result;
+
+  const tokens = preprocessQuery(inputBankName);
+  if (tokens.length === 0) return null;
+
+  // Tiền xử lý dữ liệu ngân hàng
+  const bankData = Object.entries(bankList).map(([key, value]) => {
+    const searchableText = removeDiacritics(
+      [value.name, value.short_name, value.code, ...(value.keywords || [])].join(' ')
+    );
+    return {
+      key,
+      name: value.name,
+      short_name: value.short_name,
+      bin: value.bin,
+      code: value.code,
+      searchableText
+    };
+  });
+
+  // Tìm kiếm chính xác
+  for (const bank of bankData) {
+    const normalizedBankFields = [
+      bank.short_name.toLowerCase(),
+      bank.code.toLowerCase(),
+      ...bank.searchableText.split(' ')
+    ];
+    for (const token of tokens) {
+      if (normalizedBankFields.some(field => field === token)) {
+        return {
+          name: bank.name,
+          bin: bank.bin,
+          code: bank.code
+        };
+      }
     }
   }
-  for (const bankKey in bankList) {
-    const bank = bankList[bankKey];
-    const normalizedShortName = (bank.short_name || '').toLowerCase().trim();
-    const normalizedCode = (bank.code || '').toLowerCase().trim();
-    const normalizedName = (bank.name || '').toLowerCase().trim();
-    if (
-      (normalizedShortName && (normalizedInput.includes(normalizedShortName) || normalizedShortName.includes(normalizedInput))) ||
-      (normalizedCode && (normalizedInput.includes(normalizedCode) || normalizedCode.includes(normalizedInput))) ||
-      (normalizedName && (normalizedInput.includes(normalizedName) || normalizedName.includes(normalizedInput)))
-    ) {
-      result = {
-        name: bank.name,
-        bin: bank.bin,
-        code: bank.code
-      };
-      return result;
+
+  // Tìm kiếm mờ với fuzzball.js
+  if (typeof fuzzball !== 'undefined') {
+    const options = { scorer: fuzzball.partial_ratio, returnObjects: true };
+    let bestMatch = null;
+    let highestScore = 0;
+
+    for (const token of tokens) {
+      const results = fuzzball.extract(token, bankData, { key: 'searchableText', ...options });
+      if (results.length > 0 && results[0].score > 85) {
+        if (results[0].score > highestScore) {
+          highestScore = results[0].score;
+          bestMatch = results[0].obj;
+        }
+      }
     }
+
+    if (bestMatch) {
+      return {
+        name: bestMatch.name,
+        bin: bestMatch.bin,
+        code: bestMatch.code
+      };
+    }
+  } else {
+    console.error('QR Generator: fuzzball.js chưa được tải');
   }
+
   return null;
 }
 
