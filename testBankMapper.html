@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Bank Mapper</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #bankNameInput { padding: 8px; width: 300px; }
+    #suggestions { margin-top: 10px; border: 1px solid #ccc; max-height: 200px; overflow-y: auto; }
+    .suggestion-item { padding: 8px; cursor: pointer; }
+    .suggestion-item:hover { background-color: #f0f0f0; }
+    #resultOutput { margin-top: 20px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Test Hàm mapBankName</h1>
+  <input type="text" id="bankNameInput" placeholder="Nhập tên ngân hàng" autocomplete="off">
+  <div id="suggestions"></div>
+  <pre id="resultOutput"></pre>
+
+  <script src="https://unpkg.com/fuse.js@7.0.0/dist/fuse.min.js"></script>
+  <script>
+    // Dữ liệu bankList với trường keywords bổ sung
+    const bankList =
+    {
+    "VietinBank": {
+        "id": 17,
+        "name": "Ngân hàng TMCP Công thương Việt Nam",
+        "code": "ICB",
+        "bin": "970415",
+        "logo": "https://api.vietqr.io/img/ICB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "VietinBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "ICBVVNVX",
+        "keywords": ["VietinBank", "Vietin", "Công thương", "Cong thuong", "ICB", "Vietin Bank"]
+    },
+    "Vietcombank": {
+        "id": 43,
+        "name": "Ngân hàng TMCP Ngoại Thương Việt Nam",
+        "code": "VCB",
+        "bin": "970436",
+        "logo": "https://api.vietqr.io/img/VCB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "Vietcombank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "BFTVVNVX",
+        "keywords": ["Vietcombank", "Vietcom", "Ngoại thương", "Ngoai thuong", "VCB", "Vietcom Bank"]
+    },
+    "BIDV": {
+        "id": 4,
+        "name": "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
+        "code": "BIDV",
+        "bin": "970418",
+        "logo": "https://api.vietqr.io/img/BIDV.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "BIDV",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "BIDVVNVX",
+        "keywords": ["BIDV", "Đầu tư", "Phát triển", "Dau tu", "Phat trien", "BIDV Bank"]
+    },
+    "Agribank": {
+        "id": 42,
+        "name": "Ngân hàng Nông nghiệp và Phát triển Nông thôn Việt Nam",
+        "code": "VBA",
+        "bin": "970405",
+        "logo": "https://api.vietqr.io/img/VBA.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "Agribank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "VBAAVNVX",
+        "keywords": ["Agribank", "Nông nghiệp", "Phát triển nông thôn", "Nong nghiep", "Phat trien nong thon", "VBA", "Agri Bank"]
+    },
+    "OCB": {
+        "id": 26,
+        "name": "Ngân hàng TMCP Phương Đông",
+        "code": "OCB",
+        "bin": "970448",
+        "logo": "https://api.vietqr.io/img/OCB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "OCB",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "ORCOVNVX",
+        "keywords": ["OCB", "Phương Đông", "Phuong Dong", "OCB Bank"]
+    },
+    "MBBank": {
+        "id": 21,
+        "name": "Ngân hàng TMCP Quân đội",
+        "code": "MB",
+        "bin": "970422",
+        "logo": "https://api.vietqr.io/img/MB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "MBBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "MSCBVNVX",
+        "keywords": ["MBBank", "MB Bank", "mbank", "Quân đội", "Quan doi", "MB"]
+    },
+    "Techcombank": {
+        "id": 38,
+        "name": "Ngân hàng TMCP Kỹ thương Việt Nam",
+        "code": "TCB",
+        "bin": "970407",
+        "logo": "https://api.vietqr.io/img/TCB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "Techcombank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "VTCBVNVX",
+        "keywords": ["Techcombank", "Techcom", "Kỹ thương", "Ky thuong", "TCB", "Techcom Bank"]
+    },
+    "ACB": {
+        "id": 2,
+        "name": "Ngân hàng TMCP Á Châu",
+        "code": "ACB",
+        "bin": "970416",
+        "logo": "https://api.vietqr.io/img/ACB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "ACB",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "ASCBVNVX",
+        "keywords": ["ACB", "Á Châu", "A Chau", "ACB Bank"]
+    },
+    "VPBank": {
+        "id": 47,
+        "name": "Ngân hàng TMCP Việt Nam Thịnh Vượng",
+        "code": "VPB",
+        "bin": "970432",
+        "logo": "https://api.vietqr.io/img/VPB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "VPBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "VPBKVNVX",
+        "keywords": ["VPBank", "Việt Nam Thịnh Vượng", "Thịnh Vượng", "Thinh Vuong", "VPB", "VP Bank"]
+    },
+    "TPBank": {
+        "id": 39,
+        "name": "Ngân hàng TMCP Tiên Phong",
+        "code": "TPB",
+        "bin": "970423",
+        "logo": "https://api.vietqr.io/img/TPB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "TPBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "TPBVVNVX",
+        "keywords": ["TPBank", "Tiên Phong", "Tien Phong", "TPB", "TP Bank"]
+    },
+    "Sacombank": {
+        "id": 36,
+        "name": "Ngân hàng TMCP Sài Gòn Thương Tín",
+        "code": "STB",
+        "bin": "970403",
+        "logo": "https://api.vietqr.io/img/STB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "Sacombank",
+        "support": 1,
+        "isTransfer": 1,
+        "swift_code": "SGTTVNVX",
+        "keywords": ["Sacombank", "Sài Gòn Thương Tín", "Sai Gon Thuong Tin", "STB", "Sacom Bank"]
+    },
+    "HDBank": {
+        "id": 12,
+        "name": "Ngân hàng TMCP Phát triển Thành phố Hồ Chí Minh",
+        "code": "HDB",
+        "bin": "970437",
+        "logo": "https://api.vietqr.io/img/HDB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "HDBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "HDBCVNVX",
+        "keywords": ["HDBank", "Phát triển TP HCM", "Phat trien TP HCM", "HDB", "HD Bank"]
+    },
+    "VietCapitalBank": {
+        "id": 44,
+        "name": "Ngân hàng TMCP Bản Việt",
+        "code": "VCCB",
+        "bin": "970454",
+        "logo": "https://api.vietqr.io/img/VCCB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "VietCapitalBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "VCBCVNVX",
+        "keywords": ["VietCapitalBank", "Viet Capital", "Bản Việt", "Ban Viet", "VCCB", "VietCapital Bank"]
+    },
+    "SCB": {
+        "id": 31,
+        "name": "Ngân hàng TMCP Sài Gòn",
+        "code": "SCB",
+        "bin": "970429",
+        "logo": "https://api.vietqr.io/img/SCB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "SCB",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "SACLVNVX",
+        "keywords": ["SCB", "Sài Gòn", "Sai Gon", "SCB Bank"]
+    },
+    "VIB": {
+        "id": 45,
+        "name": "Ngân hàng TMCP Quốc tế Việt Nam",
+        "code": "VIB",
+        "bin": "970441",
+        "logo": "https://api.vietqr.io/img/VIB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "VIB",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "VNIBVNVX",
+        "keywords": ["VIB", "Quốc tế", "Quoc te", "VIB Bank"]
+    },
+    "SHB": {
+        "id": 35,
+        "name": "Ngân hàng TMCP Sài Gòn - Hà Nội",
+        "code": "SHB",
+        "bin": "970443",
+        "logo": "https://api.vietqr.io/img/SHB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "SHB",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "SHBAVNVX",
+        "keywords": ["SHB", "Sài Gòn Hà Nội", "Sai Gon Ha Noi", "SHB Bank"]
+    },
+    "Eximbank": {
+        "id": 10,
+        "name": "Ngân hàng TMCP Xuất Nhập khẩu Việt Nam",
+        "code": "EIB",
+        "bin": "970431",
+        "logo": "https://api.vietqr.io/img/EIB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "Eximbank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "EBVIVNVX",
+        "keywords": ["Eximbank", "Xuất nhập khẩu", "Xuat nhap khau", "EIB", "Exim Bank"]
+    },
+    "MSB": {
+        "id": 22,
+        "name": "Ngân hàng TMCP Hàng Hải Việt Nam",
+        "code": "MSB",
+        "bin": "970426",
+        "logo": "https://api.vietqr.io/img/MSB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "MSB",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "MCOBVNVX",
+        "keywords": ["MSB", "Hàng Hải", "Hang Hai", "MSB Bank"]
+    },
+    "CAKE": {
+        "id": 53,
+        "name": "TMCP Việt Nam Thịnh Vượng - Ngân hàng số CAKE by VPBank",
+        "code": "CAKE",
+        "bin": "546034",
+        "logo": "https://api.vietqr.io/img/CAKE.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "CAKE",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": null,
+        "keywords": ["CAKE", "CAKE by VPBank", "Ngân hàng số CAKE", "Ngan hang so CAKE"]
+    },
+    "Ubank": {
+        "id": 54,
+        "name": "TMCP Việt Nam Thịnh Vượng - Ngân hàng số Ubank by VPBank",
+        "code": "Ubank",
+        "bin": "546035",
+        "logo": "https://api.vietqr.io/img/UBANK.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "Ubank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": null,
+        "keywords": ["Ubank", "Ubank by VPBank", "Ngân hàng số Ubank", "Ngan hang so Ubank"]
+    },
+    "Timo": {
+        "id": 58,
+        "name": "Ngân hàng số Timo by Ban Viet Bank (Timo by Ban Viet Bank)",
+        "code": "TIMO",
+        "bin": "963388",
+        "logo": "https://vietqr.net/portal-service/resources/icons/TIMO.png",
+        "transferSupported": 1,
+        "lookupSupported": 0,
+        "short_name": "Timo",
+        "support": 0,
+        "isTransfer": 1,
+        "swift_code": null,
+        "keywords": ["Timo", "Timo by Ban Viet", "Ngân hàng số Timo", "Ngan hang so Timo"]
+    },
+    "ViettelMoney": {
+        "id": 57,
+        "name": "Tổng Công ty Dịch vụ số Viettel - Chi nhánh tập đoàn công nghiệp viễn thông Quân Đội",
+        "code": "VTLMONEY",
+        "bin": "971005",
+        "logo": "https://api.vietqr.io/img/VIETTELMONEY.png",
+        "transferSupported": 0,
+        "lookupSupported": 1,
+        "short_name": "ViettelMoney",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["ViettelMoney", "Viettel Money", "Viettel", "VTLMONEY"]
+    },
+    "VNPTMoney": {
+        "id": 56,
+        "name": "VNPT Money",
+        "code": "VNPTMONEY",
+        "bin": "971011",
+        "logo": "https://api.vietqr.io/img/VNPTMONEY.png",
+        "transferSupported": 0,
+        "lookupSupported": 1,
+        "short_name": "VNPTMoney",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["VNPTMoney", "VNPT Money", "VNPT", "VNPTMONEY"]
+    },
+    "SaigonBank": {
+        "id": 34,
+        "name": "Ngân hàng TMCP Sài Gòn Công Thương",
+        "code": "SGICB",
+        "bin": "970400",
+        "logo": "https://api.vietqr.io/img/SGICB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "SaigonBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "SBITVNVX",
+        "keywords": ["SaigonBank", "Sài Gòn Công Thương", "Sai Gon Cong Thuong", "SGICB", "Saigon Bank"]
+    },
+    "BacABank": {
+        "id": 3,
+        "name": "Ngân hàng TMCP Bắc Á",
+        "code": "BAB",
+        "bin": "970409",
+        "logo": "https://api.vietqr.io/img/BAB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "BacABank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "NASCVNVX",
+        "keywords": ["BacABank", "Bắc Á", "Bac A", "BAB", "Bac A Bank"]
+    },
+    "PVcomBank": {
+        "id": 30,
+        "name": "Ngân hàng TMCP Đại Chúng Việt Nam",
+        "code": "PVCB",
+        "bin": "970412",
+        "logo": "https://api.vietqr.io/img/PVCB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "PVcomBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "WBVNVNVX",
+        "keywords": ["PVcomBank", "Đại chúng", "Dai chung", "PVCB", "PVcom Bank"]
+    },
+    "MBV": {
+        "id": 27,
+        "name": "Ngân hàng TNHH MTV Việt Nam Hiện Đại",
+        "code": "MBV",
+        "bin": "970414",
+        "logo": "https://api.vietqr.io/img/MBV.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "MBV",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "OCBKUS3M",
+        "keywords": ["MBV", "Việt Nam Hiện Đại", "Viet Nam Hien Dai", "MBV Bank"]
+    },
+    "NCB": {
+        "id": 24,
+        "name": "Ngân hàng TMCP Quốc Dân",
+        "code": "NCB",
+        "bin": "970419",
+        "logo": "https://api.vietqr.io/img/NCB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "NCB",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "NVBAVNVX",
+        "keywords": ["NCB", "Quốc Dân", "Quoc Dan", "NCB Bank"]
+    },
+    "ShinhanBank": {
+        "id": 37,
+        "name": "Ngân hàng TNHH MTV Shinhan Việt Nam",
+        "code": "SHBVN",
+        "bin": "970424",
+        "logo": "https://api.vietqr.io/img/SHBVN.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "ShinhanBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "SHBKVNVX",
+        "keywords": ["ShinhanBank", "Shinhan", "Shinhan Bank"]
+    },
+    "ABBANK": {
+        "id": 1,
+        "name": "Ngân hàng TMCP An Bình",
+        "code": "ABB",
+        "bin": "970425",
+        "logo": "https://api.vietqr.io/img/ABB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "ABBANK",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "ABBKVNVX",
+        "keywords": ["ABBANK", "An Bình", "An Binh", "ABB", "AB Bank"]
+    },
+    "VietABank": {
+        "id": 41,
+        "name": "Ngân hàng TMCP Việt Á",
+        "code": "VAB",
+        "bin": "970427",
+        "logo": "https://api.vietqr.io/img/VAB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "VietABank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "VNACVNVX",
+        "keywords": ["VietABank", "Việt Á", "Viet A", "VAB", "Viet A Bank"]
+    },
+    "NamABank": {
+        "id": 23,
+        "name": "Ngân hàng TMCP Nam Á",
+        "code": "NAB",
+        "bin": "970428",
+        "logo": "https://api.vietqr.io/img/NAB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "NamABank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "NAMAVNVX",
+        "keywords": ["NamABank", "Nam Á", "Nam A", "NAB", "Nam A Bank"]
+    },
+    "PGBank": {
+        "id": 29,
+        "name": "Ngân hàng TMCP Thịnh vượng và Phát triển",
+        "code": "PGB",
+        "bin": "970430",
+        "logo": "https://api.vietqr.io/img/PGB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "PGBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "PGBLVNVX",
+        "keywords": ["PGBank", "Thịnh vượng và Phát triển", "Thinh vuong va Phat trien", "PGB", "PG Bank"]
+    },
+    "VietBank": {
+        "id": 46,
+        "name": "Ngân hàng TMCP Việt Nam Thương Tín",
+        "code": "VIETBANK",
+        "bin": "970433",
+        "logo": "https://api.vietqr.io/img/VIETBANK.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "VietBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "VNTTVNVX",
+        "keywords": ["VietBank", "Việt Nam Thương Tín", "Viet Nam Thuong Tin", "VIETBANK", "Viet Bank"]
+    },
+    "BaoVietBank": {
+        "id": 5,
+        "name": "Ngân hàng TMCP Bảo Việt",
+        "code": "BVB",
+        "bin": "970438",
+        "logo": "https://api.vietqr.io/img/BVB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "BaoVietBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "BVBVVNVX",
+        "keywords": ["BaoVietBank", "Bảo Việt", "Bao Viet", "BVB", "Bao Viet Bank"]
+    },
+    "SeABank": {
+        "id": 33,
+        "name": "Ngân hàng TMCP Đông Nam Á",
+        "code": "SEAB",
+        "bin": "970440",
+        "logo": "https://api.vietqr.io/img/SEAB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "SeABank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "SEAVVNVX",
+        "keywords": ["SeABank", "Đông Nam Á", "Dong Nam A", "SEAB", "Sea Bank"]
+    },
+    "COOPBANK": {
+        "id": 52,
+        "name": "Ngân hàng Hợp tác xã Việt Nam",
+        "code": "COOPBANK",
+        "bin": "970446",
+        "logo": "https://api.vietqr.io/img/COOPBANK.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "COOPBANK",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": null,
+        "keywords": ["COOPBANK", "Hợp tác xã", "Hop tac xa", "COOPBANK"]
+    },
+    "LPBank": {
+        "id": 20,
+        "name": "Ngân hàng TMCP Lộc Phát Việt Nam",
+        "code": "LPB",
+        "bin": "970449",
+        "logo": "https://api.vietqr.io/img/LPB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "LPBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "LVBKVNVX",
+        "keywords": ["LPBank", "Lộc Phát", "Loc Phat", "LPB", "LP Bank"]
+    },
+    "KienLongBank": {
+        "id": 19,
+        "name": "Ngân hàng TMCP Kiên Long",
+        "code": "KLB",
+        "bin": "970452",
+        "logo": "https://api.vietqr.io/img/KLB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "KienLongBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "KLBKVNVX",
+        "keywords": ["KienLongBank", "Kiên Long", "Kien Long", "KLB", "Kien Long Bank"]
+    },
+    "KBank": {
+        "id": 55,
+        "name": "Ngân hàng Đại chúng TNHH Kasikornbank",
+        "code": "KBank",
+        "bin": "668888",
+        "logo": "https://api.vietqr.io/img/KBANK.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "KBank",
+        "support": 3,
+        "isTransfer": 1,
+        "swift_code": "KASIVNVX",
+        "keywords": ["KBank", "Kasikornbank", "Kasikorn", "KBank"]
+    },
+    "KookminHN": {
+        "id": 50,
+        "name": "Ngân hàng Kookmin - Chi nhánh Hà Nội",
+        "code": "KBHN",
+        "bin": "970462",
+        "logo": "https://api.vietqr.io/img/KBHN.png",
+        "transferSupported": 0,
+        "lookupSupported": 0,
+        "short_name": "KookminHN",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["KookminHN", "Kookmin Hà Nội", "Kookmin Ha Noi", "KBHN", "Kookmin"]
+    },
+    "KEBHanaHCM": {
+        "id": 60,
+        "name": "Ngân hàng KEB Hana – Chi nhánh Thành phố Hồ Chí Minh",
+        "code": "KEBHANAHCM",
+        "bin": "970466",
+        "logo": "https://api.vietqr.io/img/KEBHANAHCM.png",
+        "transferSupported": 0,
+        "lookupSupported": 0,
+        "short_name": "KEBHanaHCM",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["KEBHanaHCM", "KEB Hana HCM", "Hana HCM", "KEBHANAHCM"]
+    },
+    "KEBHANAHN": {
+        "id": 61,
+        "name": "Ngân hàng KEB Hana – Chi nhánh Hà Nội",
+        "code": "KEBHANAHN",
+        "bin": "970467",
+        "logo": "https://api.vietqr.io/img/KEBHANAHN.png",
+        "transferSupported": 0,
+        "lookupSupported": 0,
+        "short_name": "KEBHANAHN",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["KEBHANAHN", "KEB Hana Hà Nội", "KEB Hana Ha Noi", "Hana Hà Nội", "Hana Ha Noi", "KEBHANAHN"]
+    },
+    "MAFC": {
+        "id": 62,
+        "name": "Công ty Tài chính TNHH MTV Mirae Asset (Việt Nam) ",
+        "code": "MAFC",
+        "bin": "977777",
+        "logo": "https://api.vietqr.io/img/MAFC.png",
+        "transferSupported": 0,
+        "lookupSupported": 0,
+        "short_name": "MAFC",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["MAFC", "Mirae Asset", "Mirae", "MAFC"]
+    },
+    "Citibank": {
+        "id": 59,
+        "name": "Ngân hàng Citibank, N.A. - Chi nhánh Hà Nội",
+        "code": "CITIBANK",
+        "bin": "533948",
+        "logo": "https://api.vietqr.io/img/CITIBANK.png",
+        "transferSupported": 0,
+        "lookupSupported": 0,
+        "short_name": "Citibank",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["Citibank", "Citi", "Citibank Hà Nội", "Citibank Ha Noi"]
+    },
+    "KookminHCM": {
+        "id": 51,
+        "name": "Ngân hàng Kookmin - Chi nhánh Thành phố Hồ Chí Minh",
+        "code": "KBHCM",
+        "bin": "970463",
+        "logo": "https://api.vietqr.io/img/KBHCM.png",
+        "transferSupported": 0,
+        "lookupSupported": 0,
+        "short_name": "KookminHCM",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["KookminHCM", "Kookmin TP HCM", "Kookmin HCM", "KBHCM"]
+    },
+    "VBSP": {
+        "id": 63,
+        "name": "Ngân hàng Chính sách Xã hội",
+        "code": "VBSP",
+        "bin": "999888",
+        "logo": "https://api.vietqr.io/img/VBSP.png",
+        "transferSupported": 0,
+        "lookupSupported": 0,
+        "short_name": "VBSP",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["VBSP", "Chính sách Xã hội", "Chinh sach Xa hoi", "VBSP"]
+    },
+    "Woori": {
+        "id": 49,
+        "name": "Ngân hàng TNHH MTV Woori Việt Nam",
+        "code": "WVN",
+        "bin": "970457",
+        "logo": "https://api.vietqr.io/img/WVN.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "Woori",
+        "support": 0,
+        "isTransfer": 1,
+        "swift_code": null,
+        "keywords": ["Woori", "Woori Bank", "WVN"]
+    },
+    "VRB": {
+        "id": 48,
+        "name": "Ngân hàng Liên doanh Việt - Nga",
+        "code": "VRB",
+        "bin": "970421",
+        "logo": "https://api.vietqr.io/img/VRB.png",
+        "transferSupported": 0,
+        "lookupSupported": 1,
+        "short_name": "VRB",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["VRB", "Việt Nga", "Viet Nga", "VRB Bank"]
+    },
+    "UnitedOverseas": {
+        "id": 40,
+        "name": "Ngân hàng United Overseas - Chi nhánh TP. Hồ Chí Minh",
+        "code": "UOB",
+        "bin": "970458",
+        "logo": "https://api.vietqr.io/img/UOB.png",
+        "transferSupported": 0,
+        "lookupSupported": 1,
+        "short_name": "UnitedOverseas",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["UnitedOverseas", "UOB", "United Overseas", "UOB HCM"]
+    },
+    "StandardChartered": {
+        "id": 32,
+        "name": "Ngân hàng TNHH MTV Standard Chartered Bank Việt Nam",
+        "code": "SCVN",
+        "bin": "970410",
+        "logo": "https://api.vietqr.io/img/SCVN.png",
+        "transferSupported": 0,
+        "lookupSupported": 1,
+        "short_name": "StandardChartered",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": "SCBLVNVX",
+        "keywords": ["StandardChartered", "Standard Chartered", "SCVN", "Standard Bank"]
+    },
+    "PublicBank": {
+        "id": 28,
+        "name": "Ngân hàng TNHH MTV Public Việt Nam",
+        "code": "PBVN",
+        "bin": "970439",
+        "logo": "https://api.vietqr.io/img/PBVN.png",
+        "transferSupported": 0,
+        "lookupSupported": 1,
+        "short_name": "PublicBank",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": "VIDPVNVX",
+        "keywords": ["PublicBank", "Public", "PBVN", "Public Bank"]
+    },
+    "Nonghyup": {
+        "id": 25,
+        "name": "Ngân hàng Nonghyup - Chi nhánh Hà Nội",
+        "code": "NHB HN",
+        "bin": "801011",
+        "logo": "https://api.vietqr.io/img/NHB.png",
+        "transferSupported": 0,
+        "lookupSupported": 0,
+        "short_name": "Nonghyup",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["Nonghyup", "Nonghyup Hà Nội", "Nonghyup Ha Noi", "NHB HN", "Nonghyup Bank"]
+    },
+    "IndovinaBank": {
+        "id": 18,
+        "name": "Ngân hàng TNHH Indovina",
+        "code": "IVB",
+        "bin": "970434",
+        "logo": "https://api.vietqr.io/img/IVB.png",
+        "transferSupported": 0,
+        "lookupSupported": 1,
+        "short_name": "IndovinaBank",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["IndovinaBank", "Indovina", "IVB", "Indovina Bank"]
+    },
+    "IBKHCM": {
+        "id": 16,
+        "name": "Ngân hàng Công nghiệp Hàn Quốc - Chi nhánh TP. Hồ Chí Minh",
+        "code": "IBK - HCM",
+        "bin": "970456",
+        "logo": "https://api.vietqr.io/img/IBK.png",
+        "transferSupported": 0,
+        "lookupSupported": 0,
+        "short_name": "IBKHCM",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["IBKHCM", "Công nghiệp Hàn Quốc HCM", "Cong nghiep Han Quoc HCM", "IBK HCM"]
+    },
+    "IBKHN": {
+        "id": 15,
+        "name": "Ngân hàng Công nghiệp Hàn Quốc - Chi nhánh Hà Nội",
+        "code": "IBK - HN",
+        "bin": "970455",
+        "logo": "https://api.vietqr.io/img/IBK.png",
+        "transferSupported": 0,
+        "lookupSupported": 0,
+        "short_name": "IBKHN",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": null,
+        "keywords": ["IBKHN", "Công nghiệp Hàn Quốc Hà Nội", "Cong nghiep Han Quoc Ha Noi", "IBK Hà Nội", "IBK Ha Noi"]
+    },
+    "HSBC": {
+        "id": 14,
+        "name": "Ngân hàng TNHH MTV HSBC (Việt Nam)",
+        "code": "HSBC",
+        "bin": "458761",
+        "logo": "https://api.vietqr.io/img/HSBC.png",
+        "transferSupported": 0,
+        "lookupSupported": 1,
+        "short_name": "HSBC",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": "HSBCVNVX",
+        "keywords": ["HSBC", "HSBC Việt Nam", "HSBC Viet Nam"]
+    },
+    "HongLeong": {
+        "id": 13,
+        "name": "Ngân hàng TNHH MTV Hong Leong Việt Nam",
+        "code": "HLBVN",
+        "bin": "970442",
+        "logo": "https://api.vietqr.io/img/HLBVN.png",
+        "transferSupported": 0,
+        "lookupSupported": 1,
+        "short_name": "HongLeong",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": "HLBBVNVX",
+        "keywords": ["HongLeong", "Hong Leong", "HLBVN", "Hong Leong Bank"]
+    },
+    "GPBank": {
+        "id": 11,
+        "name": "Ngân hàng Thương mại TNHH MTV Dầu Khí Toàn Cầu",
+        "code": "GPB",
+        "bin": "970408",
+        "logo": "https://api.vietqr.io/img/GPB.png",
+        "transferSupported": 0,
+        "lookupSupported": 1,
+        "short_name": "GPBank",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": "GBNKVNVX",
+        "keywords": ["GPBank", "Dầu Khí Toàn Cầu", "Dau Khi Toan Cau", "GPB", "GP Bank"]
+    },
+    "Vikki": {
+        "id": 9,
+        "name": "Ngân hàng TNHH MTV Số Vikki",
+        "code": "Vikki",
+        "bin": "970406",
+        "logo": "https://api.vietqr.io/img/Vikki.png",
+        "transferSupported": 0,
+        "lookupSupported": 1,
+        "short_name": "Vikki",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": "EACBVNVX",
+        "keywords": ["Vikki", "Ngân hàng số Vikki", "Ngan hang so Vikki"]
+    },
+    "DBSBank": {
+        "id": 8,
+        "name": "DBS Bank Ltd - Chi nhánh Thành phố Hồ Chí Minh",
+        "code": "DBS",
+        "bin": "796500",
+        "logo": "https://api.vietqr.io/img/DBS.png",
+        "transferSupported": 0,
+        "lookupSupported": 0,
+        "short_name": "DBSBank",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": "DBSSVNVX",
+        "keywords": ["DBSBank", "DBS", "DBS HCM"]
+    },
+    "CIMB": {
+        "id": 7,
+        "name": "Ngân hàng TNHH MTV CIMB Việt Nam",
+        "code": "CIMB",
+        "bin": "422589",
+        "logo": "https://api.vietqr.io/img/CIMB.png",
+        "transferSupported": 1,
+        "lookupSupported": 1,
+        "short_name": "CIMB",
+        "support": 0,
+        "isTransfer": 1,
+        "swift_code": "CIBBVNVN",
+        "keywords": ["CIMB", "CIMB Việt Nam", "CIMB Viet Nam"]
+    },
+    "CBBank": {
+        "id": 6,
+        "name": "Ngân hàng Thương mại TNHH MTV Xây dựng Việt Nam",
+        "code": "CBB",
+        "bin": "970444",
+        "logo": "https://api.vietqr.io/img/CBB.png",
+        "transferSupported": 0,
+        "lookupSupported": 1,
+        "short_name": "CBBank",
+        "support": 0,
+        "isTransfer": 0,
+        "swift_code": "GTBAVNVX",
+        "keywords": ["CBBank", "Xây dựng", "Xay dung", "CBB", "CB Bank"]
+    }
+};
+
+    // Chuyển bankList thành mảng để sử dụng với Fuse.js
+    const bankArray = Object.keys(bankList).map(key => ({
+      key,
+      ...bankList[key]
+    }));
+
+    // Cấu hình Fuse.js với trường keywords
+    const fuse = new Fuse(bankArray, {
+      keys: [
+        { name: 'keywords', weight: 0.5 }, // Ưu tiên keywords
+        { name: 'short_name', weight: 0.3 },
+        { name: 'code', weight: 0.2 },
+        { name: 'name', weight: 0.1 }
+      ],
+      threshold: 0.2, // Giảm ngưỡng để chấp nhận khớp gần đúng hơn
+      includeScore: true,
+      minMatchCharLength: 1 // Cho phép tìm kiếm với đầu vào ngắn
+    });
+
+    // Hàm chuẩn hóa chuỗi (loại bỏ dấu tiếng Việt, chuyển về lowercase)
+    function normalizeString(str) {
+      if (!str) return '';
+      return str
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    // Hàm tìm kiếm ngân hàng
+    function mapBankName(inputBankName) {
+      if (!inputBankName) return null;
+
+      const normalizedInput = normalizeString(inputBankName);
+
+      // Tìm kiếm chính xác với short_name, code, và keywords
+      for (const bank of bankArray) {
+        const normalizedShortName = normalizeString(bank.short_name);
+        const normalizedCode = normalizeString(bank.code);
+        const normalizedKeywords = bank.keywords.map(normalizeString);
+
+        if (
+          normalizedInput === normalizedShortName ||
+          normalizedInput === normalizedCode ||
+          normalizedKeywords.includes(normalizedInput)
+        ) {
+          return {
+            name: bank.name,
+            bin: bank.bin,
+            code: bank.code
+          };
+        }
+      }
+
+      // Tìm kiếm mờ với Fuse.js
+      const results = fuse.search(normalizedInput);
+      if (results.length > 0 && results[0].score < 0.3) {
+        const bank = results[0].item;
+        return {
+          name: bank.name,
+          bin: bank.bin,
+          code: bank.code
+        };
+      }
+
+      return null;
+    }
+
+    // Hàm hiển thị gợi ý
+    function showSuggestions(input) {
+      const suggestionsDiv = document.getElementById('suggestions');
+      suggestionsDiv.innerHTML = '';
+
+      if (!input) return;
+
+      const normalizedInput = normalizeString(input);
+      const results = fuse.search(normalizedInput).slice(0, 5); // Lấy tối đa 5 gợi ý
+
+      if (results.length === 0) return;
+
+      results.forEach(result => {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item';
+        div.textContent = `${result.item.short_name} (${result.item.code}) - ${result.item.name}`;
+        div.onclick = () => {
+          document.getElementById('bankNameInput').value = result.item.short_name;
+          suggestionsDiv.innerHTML = '';
+          displayResult(result.item.short_name);
+        };
+        suggestionsDiv.appendChild(div);
+      });
+    }
+
+    // Hàm hiển thị kết quả
+    function displayResult(input) {
+      const result = mapBankName(input);
+      const outputElement = document.getElementById('resultOutput');
+      if (result) {
+        outputElement.textContent = `Kết quả cho "${input}":\n${JSON.stringify(result, null, 2)}`;
+      } else {
+        outputElement.textContent = `Không tìm thấy ngân hàng phù hợp cho "${input}". Gợi ý: thử "MBBank", "Vietcombank", hoặc "TPBank".`;
+      }
+    }
+
+    // Sự kiện input thời gian thực
+    document.getElementById('bankNameInput').addEventListener('input', function() {
+      const input = this.value;
+      showSuggestions(input);
+      displayResult(input);
+    });
+  </script>
+</body>
+</html>
