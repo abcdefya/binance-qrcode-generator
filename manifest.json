@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Binance QR Code Generator",
+  "name": "Binance QR Generator",
   "version": "1.0",
-  "description": "Tạo mã QR cho giao dịch chuyển khoản ngân hàng trên Binance",
+  "description": "Tự động tạo mã QR VietQR cho giao dịch P2P trên Binance",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
@@ -11,15 +11,18 @@
   },
   "permissions": [
     "activeTab",
-    "storage"
+    "scripting",
+    "storage",
+    "tabs"
   ],
   "host_permissions": [
-    "https://www.binance.com/*"
+    "<all_urls>"
   ],
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     }
@@ -29,18 +32,14 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.binance.com/*"],
-      "js": [
-        "scripts/lib/fuse.min.js",
-        "scripts/content.js"
-      ],
-      "css": []
+      "matches": ["<all_urls>"],
+      "js": ["scripts/content.js"]
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["bankList.json", "scripts/lib/fuse.min.js"],
-      "matches": ["https://www.binance.com/*"]
+      "resources": ["bankList.json"],
+      "matches": ["<all_urls>"]
     }
   ]
 }
