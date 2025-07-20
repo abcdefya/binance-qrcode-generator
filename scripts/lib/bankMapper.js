@@ -1,6 +1,11 @@
 // Bank Mapper Module
 // This module handles bank name searching and mapping functionality
 
+// Ensure fuzzball is available in the global scope for Chrome extension
+if (typeof fuzzball === 'undefined') {
+  console.error('QR Generator: fuzzball.js is not loaded. Bank mapping might not work correctly.');
+}
+
 // Hàm chuẩn hóa tiếng Việt (chuyển có dấu thành không dấu)
 function removeDiacritics(str) {
   return str
