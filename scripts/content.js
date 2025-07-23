@@ -310,7 +310,11 @@ async function extractBankTransferInfo(document) {
     });
     if (transferInfo.bankName) {
       const bankList = await getBankList();
-      const bankInfo = mapBankName(transferInfo.bankName, bankList);
+      if (!window.bankMapper) {
+        console.error('QR Generator: bankMapper is not defined');
+        return transferInfo;
+      }
+      const bankInfo = window.bankMapper.mapBankName(transferInfo.bankName, bankList);
       if (bankInfo) {
         transferInfo.bankName = bankInfo.name;
         transferInfo.bankBin = bankInfo.bin;
@@ -332,12 +336,6 @@ async function getBankList() {
     console.error('QR Generator: Lỗi khi đọc file bankList.json:', error);
     return {};
   }
-}
-
-
-// Hàm tìm kiếm ngân hàng cải tiến
-function mapBankName(inputBankName, bankList) {
-  return window.bankMapper.mapBankName(inputBankName, bankList);
 }
 
 function generateQRUrl(transferInfo) {

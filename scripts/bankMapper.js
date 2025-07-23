@@ -47,6 +47,10 @@ function generateDynamicAliases(bank) {
   // Add concatenated core name (e.g., "thinhvuong" for VPBank)
   const coreName = nameParts.filter(part => !['ngân', 'hàng', 'tmcp', 'thương', 'mại', 'cổ', 'phần', 'việt', 'nam'].includes(part)).join('');
   if (coreName) aliases.push(coreName);
+  // Add common misspellings or variations
+  if (bank.short_name.toLowerCase() === 'vpbank') {
+    aliases.push('liobank'); // Handle typo "Liobank" for VPBank
+  }
   return [...new Set(aliases)]; // Remove duplicates
 }
 
@@ -61,7 +65,7 @@ function preprocessInput(input) {
   processed = processed.split(/\s+by\s+/)[0].trim();
 
   // Rule 3: Remove stopwords
-  const stopwords = ['ngân hàng', 'nh', 'thương mại cổ phần', 'tmcp', 'việt nam', 'thương', 'mại', 'cổ', 'phần'];
+  const stopwords = ['ngân hàng', 'nh', 'thương mại cổ phần', 'tmcp', 'việt nam', 'thương', 'mại', 'cổ', 'phần', 'bank'];
   stopwords.forEach(word => {
     processed = processed.replace(new RegExp(`\\b${word}\\b`, 'gi'), '').trim();
   });
@@ -82,12 +86,14 @@ function preprocessInput(input) {
 // Bank search function
 function mapBankName(inputBankName, bankList) {
   if (!inputBankName || typeof inputBankName !== 'string' || !bankList) {
+    console.log('QR Generator: Invalid input or bankList:', { inputBankName, bankList });
     return null;
   }
 
   // Apply preprocessing
   const processedInput = preprocessInput(inputBankName);
   const normalizedInput = normalizeVietnamese(processedInput).replace(/[\-\s]/g, '');
+  console.log('QR Generator: Normalized input:', normalizedInput);
   const isShortInput = normalizedInput.length <= 6;
 
   const banks = Object.values(bankList);
@@ -156,8 +162,7 @@ function mapBankName(inputBankName, bankList) {
         const distance = levenshteinDistance(normalizedInput, aliasValue);
         const maxLen = Math.max(normalizedInput.length, aliasValue.length);
         const similarity = 1 - distance / maxLen;
-        if (similari
-ty + 0.1 > highestScore) {
+        if (similarity + 0.1 > highestScore) {
           highestScore = similarity + 0.1;
           bestMatch = bank;
           matchType = `alias_fuzzy`;
@@ -165,6 +170,8 @@ ty + 0.1 > highestScore) {
       }
     }
   }
+
+  console.log('QR Generator: Match result:', { highestScore, matchType, bestMatch });
 
   if (highestScore < 0.75) {
     return null;
@@ -177,9 +184,5 @@ ty + 0.1 > highestScore) {
   };
 }
 
-// Export the function for use in other scripts
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { mapBankName };
-} else {
-  window.bankMapper = { mapBankName };
-}
+// Expose to window for content script
+window.bankMapper = { mapBankName };
