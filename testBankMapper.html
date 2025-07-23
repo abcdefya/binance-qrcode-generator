@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tìm kiếm ngân hàng</title>
-  <script src="fuzzball.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuzzball@2.0.0/dist/fuzzball.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
@@ -20,7 +20,7 @@
   </div>
 
   <script>
-    // Danh sách ngân hàng với trường popularity
+    // Danh sách ngân hàng
     const bankList = {
     "VietinBank": {
         "id": 17,
@@ -843,7 +843,7 @@
     }
 };
 
-    // Hàm chuẩn hóa tiếng Việt
+    // Hàm chuẩn hóa tiếng Việt (chuyển có dấu thành không dấu)
     function removeDiacritics(str) {
       return str
         .normalize('NFD')
@@ -864,126 +864,94 @@
         short_name: value.short_name,
         bin: value.bin,
         code: value.code,
-        logo: value.logo,
-        searchableText,
-        popularity: value.popularity || 0.5
+        searchableText
       };
     });
 
-    // Danh sách từ dừng mở rộng
-    const stopWords = [
-      'ngan', 'hang', 'tmcp', 'co', 'phan', 'viet', 'nam', 'thuong', 'mai', 'bank'
-    ];
-
-    // Hàm tiền xử lý truy vấn
+    // Hàm tách và lọc từ khóa từ chuỗi đầu vào
     function preprocessQuery(query) {
-      const cleanedQuery = query
-        .replace(/[\(\)\[\]\,\.\-]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-      const tokens = cleanedQuery
-        .split(/\s+/)
-        .map(removeDiacritics)
-        .filter(token => token && !stopWords.includes(token));
+      // Loại bỏ ký tự đặc biệt và tách thành từ
+      const cleanedQuery = query.replace(/[\(\)\[\]\,]/g, ' ').trim();
+      const tokens = cleanedQuery.split(/\s+/).map(removeDiacritics).filter(token => 
+        token && !['nh', 'tmcp', 'ngan', 'hang', 'thuong', 'mai', 'co', 'phan'].includes(token)
+      );
       return tokens;
     }
 
     // Hàm tìm kiếm ngân hàng
     function searchBank(query) {
-      if (!query) return [];
+      if (!query) return null;
       const tokens = preprocessQuery(query);
-      if (tokens.length === 0) return [];
+      if (tokens.length === 0) return null;
 
       // Tìm kiếm chính xác
-      const exactMatches = bankData.filter(bank => {
+      for (const bank of bankData) {
         const normalizedBankFields = [
           bank.short_name.toLowerCase(),
           bank.code.toLowerCase(),
           ...bank.searchableText.split(' ')
         ];
-        return tokens.some(token => 
-          normalizedBankFields.includes(token)
-        );
-      });
-
-      if (exactMatches.length > 0) {
-        return exactMatches.map(bank => ({
-          name: bank.name,
-          short_name: bank.short_name,
-          bin: bank.bin,
-          code: bank.code,
-          logo: bank.logo,
-          score: 100,
-          popularity: bank.popularity
-        }));
-      }
-
-      // Tìm kiếm mờ
-      const options = {
-        scorer: fuzzball.token_sort_ratio,
-        returnObjects: true
-      };
-      let results = [];
-      for (const token of tokens) {
-        const tokenResults = fuzzball.extract(token, bankData, { key: 'searchableText', ...options });
-        results.push(...tokenResults);
-      }
-
-      // Gộp và xếp hạng kết quả
-      const aggregatedResults = [];
-      const seenKeys = new Set();
-      for (const result of results) {
-        if (!seenKeys.has(result.obj.key) && result.score > 80) {
-          seenKeys.add(result.obj.key);
-          aggregatedResults.push({
-            name: result.obj.name,
-            short_name: result.obj.short_name,
-            bin: result.obj.bin,
-            code: result.obj.code,
-            logo: result.obj.logo,
-            score: result.score,
-            popularity: result.obj.popularity
-          });
+        for (const token of tokens) {
+          if (normalizedBankFields.some(field => field === token)) {
+            return {
+              name: bank.name,
+              short_name: bank.short_name,
+              bin: bank.bin,
+              code: bank.code
+            };
+          }
         }
       }
 
-      // Sắp xếp theo điểm số và độ phổ biến
-      return aggregatedResults.sort((a, b) => {
-        const scoreDiff = b.score * b.popularity - a.score * a.popularity;
-        return scoreDiff !== 0 ? scoreDiff : b.score - a.score;
-      });
+      // Tìm kiếm mờ với fuzzball.js
+      const options = { scorer: fuzzball.partial_ratio, returnObjects: true };
+      let bestMatch = null;
+      let highestScore = 0;
+
+      for (const token of tokens) {
+        const results = fuzzball.extract(token, bankData, { key: 'searchableText', ...options });
+        if (results.length > 0 && results[0].score > 85) {
+          if (results[0].score > highestScore) {
+            highestScore = results[0].score;
+            bestMatch = results[0].obj;
+          }
+        }
+      }
+
+      if (bestMatch) {
+        return {
+          name: bestMatch.name,
+          short_name: bestMatch.short_name,
+          bin: bestMatch.bin,
+          code: bestMatch.code
+        };
+      }
+
+      return null;
     }
 
-    // Xử lý sự kiện input với debounce
+    // Xử lý sự kiện input
     const searchInput = document.getElementById('searchInput');
     const resultDiv = document.getElementById('result');
-    let debounceTimeout;
 
     searchInput.addEventListener('input', () => {
-      clearTimeout(debounceTimeout);
-      debounceTimeout = setTimeout(() => {
-        const query = searchInput.value;
-        const results = searchBank(query);
+      const query = searchInput.value;
+      const result = searchBank(query);
 
-        if (results.length > 0) {
-          resultDiv.innerHTML = results.map(result => `
-            <div class="p-4 bg-gray-50 rounded mb-2 flex items-center">
-              <img src="${result.logo}" alt="${result.short_name}" class="w-10 h-10 mr-4">
-              <div>
-                <p><strong>Tên ngân hàng:</strong> ${result.name}</p>
-                <p><strong>Tên viết tắt:</strong> ${result.short_name}</p>
-                <p><strong>Bin:</strong> ${result.bin}</p>
-                <p><strong>Code:</strong> ${result.code}</p>
-                <p><strong>Độ khớp:</strong> ${Math.round(result.score)}%</p>
-              </div>
-            </div>
-          `).join('');
-        } else {
-          resultDiv.innerHTML = `
-            <p class="text-red-500">Không tìm thấy ngân hàng. Gợi ý: Thử 'Vietcombank', 'VCB', hoặc 'VietinBank'.</p>
-          `;
-        }
-      }, 300);
+      if (result) {
+        resultDiv.innerHTML = `
+          <div class="p-4 bg-gray-50 rounded">
+            <p><strong>Tên ngân hàng:</strong> ${result.name}</p>
+            <p><strong>Tên viết tắt:</strong> ${result.short_name}</p>
+            <p><strong>Bin:</strong> ${result.bin}</p>
+            <p><strong>Code:</strong> ${result.code}</p>
+          </div>
+        `;
+      } else {
+        resultDiv.innerHTML = `
+          <p class="text-red-500">Không tìm thấy ngân hàng. Vui lòng thử lại với từ khóa khác (VD: VietinBank, VCB, Tiên Phong).</p>
+        `;
+      }
     });
   </script>
 </body>
